@@ -1,4 +1,6 @@
 import Image from "next/image";
+import { redirect } from "next/dist/server/api-utils";
+import Link from "next/link";
 
 export default function Home() {
   return (
@@ -22,6 +24,11 @@ export default function Home() {
           </li>
           <li>Save and see your changes instantly.</li>
         </ol>
+
+        <div className="text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
+
+          {<Link href="/1/">go to </Link>}
+        </div>
 
         <div className="flex gap-4 items-center flex-col sm:flex-row">
           <a
