@@ -1,30 +1,41 @@
-export interface AccordionInnerGroup {
+export interface SubGroup {
   id: number;
   label: string;
 }
 
-export interface AccordionGroup {
+export interface Group {
   id: number;
   label: string;
-  subGroups: AccordionInnerGroup[];
+  subGroups: SubGroup[];
 }
 
-export enum CardHomeStatus {
-  PaymentOverdue = "PAYMENT_OVERDUE",
-  TrainingPending = "TRAINING_PENDING",
-  SupportNeeded = "SUPPORT_NEEDED",
+export interface Student {
+  id: number;
+  name: string;
+  groupId: number;
+  subGroupId: number;
+  paymentStatus: PaymentStatus;
+  generalStatus?: GeneralStatus;
+}
+
+export enum PaymentStatus {
+  Active = "active",
+  Inactive = "inactive",
+  Overdue = "overdue",
+}
+
+export enum GeneralStatus {
+  TrainingPending = "trainingPending",
+  SupportNeeded = "supportNeeded",
 }
 
 export interface CardHomeData {
   id: number;
   name: string;
-  status?: CardHomeStatus;
+  status?: GeneralStatus;
 }
 
-export interface CardGestaoAlunosData {
+export interface TrainCategory {
   id: number;
-  name: string;
-  group: string;
-  subGroup: string;
-  paymentStatus: "active" | "inactive" | "overdue";
+  label: string;
 }

@@ -10,7 +10,7 @@ import {
 import Accordion from "../Accordion";
 import PrimaryButton from "../PrimaryButton";
 
-import { mockedAccordionItems } from "@/utils/mockedData";
+import { mockedGroups } from "@/data/mockedData";
 
 export interface ISelectedItem {
   parentId: number;
@@ -40,7 +40,6 @@ export default function Sidebar() {
 
   function onGroupClick(id: number) {
     dispatch(setIsManagementSelected(false));
-    dispatch(setAccordionGroupOpened(-1));
     dispatch(setItemSubGroupSelected({ parentId: id, itemId: -1 }));
     router.push(`/grupos/${id}`);
   }
@@ -92,7 +91,7 @@ export default function Sidebar() {
           <p className="text-left font-bold text-xl ">MEUS GRUPOS</p>
           <PlusSignSquareIcon className="hover:cursor-pointer" />
         </div>
-        {mockedAccordionItems.map((item) => (
+        {mockedGroups.map((item) => (
           <Accordion
             key={item.id}
             id={item.id}

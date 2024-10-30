@@ -3,7 +3,7 @@ import { useRouter } from "next/navigation";
 import PrimaryButton from "@/components/PrimaryButton";
 import CardGestaoAlunos from "@/components/CardGestaoAlunos";
 
-import { mockedAllStudentsGestao } from "@/utils/mockedData";
+import { mockedStudents } from "@/data/mockedData";
 import FilterBox from "@/components/FilterBox";
 
 export default function Gestao() {
@@ -22,7 +22,7 @@ export default function Gestao() {
   }
 
   return (
-    <div className="p-6 flex flex-1 flex-col gap-4 overflow-y-auto h-[calc(100vh-5rem)] scrollbar-custom">
+    <div className="p-6 flex flex-1 flex-col gap-4 overflow-y-auto h-[calc(100vh-5rem)] scrollbar-custom outline-none">
       <header className="flex flex-col gap-2">
         <div className="flex flex-row justify-between items-center">
           <p className="text-primaryGreen font-bold text-3xl">
@@ -38,13 +38,13 @@ export default function Gestao() {
         </div>
       </header>
       <div className="flex flex-col gap-2">
-        {mockedAllStudentsGestao.map((item) => (
+        {mockedStudents.map((item) => (
           <CardGestaoAlunos
             key={item.id}
             id={item.id}
             name={item.name}
-            group={item.group}
-            subGroup={item.subGroup}
+            groupId={item.groupId}
+            subGroupId={item.groupId}
             paymentStatus={item.paymentStatus}
             onExternalLinkClick={navigateToAlunoId}
           />

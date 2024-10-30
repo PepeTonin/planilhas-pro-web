@@ -1,5 +1,7 @@
+import { PaymentStatus } from "@/utils/sharedTypes";
+
 interface TagProps {
-  paymentStatus: "active" | "inactive" | "overdue";
+  paymentStatus: PaymentStatus;
 }
 
 export default function Tag({ paymentStatus }: TagProps) {

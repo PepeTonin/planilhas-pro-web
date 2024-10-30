@@ -3,16 +3,28 @@ import { useRouter } from "next/navigation";
 import CardHome from "@/components/CardHome";
 
 import {
-  mockedHomeNotifications,
+  mockedStudents,
   mockedMostRecentViewedStudents,
-} from "@/utils/mockedData";
+} from "@/data/mockedData";
+import { useEffect, useState } from "react";
+import { PaymentStatus, Student } from "@/utils/sharedTypes";
 
 export default function Home() {
+  const [studentsNeedReview, setStudentsNeedReview] = useState<Student[]>();
+
   const router = useRouter();
 
   function navigateToAlunoId(id: number) {
     router.push(`/aluno/${id}`);
   }
+
+  useEffect(() => {
+    const filteredStudents = mockedStudents.filter(
+      (student) =>
+        student.generalStatus || student.paymentStatus === PaymentStatus.Overdue
+    );
+    setStudentsNeedReview(filteredStudents);
+  }, []);
 
   return (
     <div className="flex flex-col flex-1 p-6 gap-4 overflow-y-auto h-[calc(100vh-5rem)] scrollbar-custom">
@@ -25,15 +37,17 @@ export default function Home() {
           Notificações
         </p>
         <div className="flex flex-col justify-center items-center gap-2">
-          {mockedHomeNotifications.map((item) => (
-            <CardHome
-              key={item.id}
-              name={item.name}
-              status={item.status}
-              id={item.id}
-              onExternalLinkClick={navigateToAlunoId}
-            />
-          ))}
+          {studentsNeedReview &&
+            studentsNeedReview.map((item) => (
+              <CardHome
+                key={item.id}
+                id={item.id}
+                name={item.name}
+                generalStatus={item.generalStatus}
+                paymentStatus={item.paymentStatus}
+                onClick={navigateToAlunoId}
+              />
+            ))}
         </div>
       </div>
 
@@ -47,7 +61,7 @@ export default function Home() {
               key={item.id}
               name={item.name}
               id={item.id}
-              onExternalLinkClick={navigateToAlunoId}
+              onClick={navigateToAlunoId}
             />
           ))}
         </div>

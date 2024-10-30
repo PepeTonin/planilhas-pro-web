@@ -1,55 +1,59 @@
-import { CardHomeStatus } from "@/utils/sharedTypes";
+import { GeneralStatus, PaymentStatus } from "@/utils/sharedTypes";
 import { LinkSquare01Icon, ArrowRight04Icon } from "hugeicons-react";
 
 interface CardHomeProps {
-  name: string;
-  status?: CardHomeStatus;
   id: number;
-  onExternalLinkClick: (id: number) => void;
+  name: string;
+  generalStatus?: GeneralStatus;
+  paymentStatus?: PaymentStatus;
+  onClick: (id: number) => void;
 }
 
 export default function CardHome({
-  name,
-  status,
   id,
-  onExternalLinkClick,
+  name,
+  generalStatus,
+  paymentStatus,
+  onClick,
 }: CardHomeProps) {
   const statusText = {
-    [CardHomeStatus.PaymentOverdue]: "Pagamento em atraso",
-    [CardHomeStatus.TrainingPending]: "Treinamento pendente",
-    [CardHomeStatus.SupportNeeded]: "Suporte necessário",
+    [PaymentStatus.Overdue]: "Pagamento em atraso",
+    [GeneralStatus.TrainingPending]: "Treinamento pendente",
+    [GeneralStatus.SupportNeeded]: "Suporte necessário",
   };
 
   const statusBgColor = {
-    [CardHomeStatus.PaymentOverdue]: "bg-red",
-    [CardHomeStatus.TrainingPending]: "bg-yellow",
-    [CardHomeStatus.SupportNeeded]: "bg-yellow",
+    [PaymentStatus.Overdue]: "bg-red",
+    [GeneralStatus.TrainingPending]: "bg-yellow",
+    [GeneralStatus.SupportNeeded]: "bg-yellow",
   };
 
   return (
     <div
+      onClick={() => onClick(id)}
       className={`${
-        status ? statusBgColor[status] : "bg-white-f5"
-      } flex flex-row justify-between items-center w-full py-2 px-4 rounded-lg`}
+        paymentStatus === PaymentStatus.Overdue
+          ? statusBgColor[paymentStatus]
+          : generalStatus
+          ? statusBgColor[generalStatus]
+          : "bg-white-f5"
+      } flex flex-row justify-between items-center w-full py-2 px-4 rounded-lg cursor-pointer`}
     >
-      {status ? (
-        <div className="flex flex-row justify-center items-center gap-2 text-primaryDarkBg font-semibold">
-          <p>{name}</p>
-          <ArrowRight04Icon className="text-primaryDarkBg" size={24} />
-          <p>{statusText[status]}</p>
-        </div>
-      ) : (
-        <div className="text-primaryDarkBg font-semibold">
-          <p>{name}</p>
-        </div>
-      )}
-      <div>
-        <LinkSquare01Icon
-          className="text-primaryDarkBg cursor-pointer"
-          size={24}
-          onClick={() => onExternalLinkClick(id)}
-        />
+      <div className="flex flex-row items-end gap-4">
+        <p className="text-primaryDarkBg font-semibold">{name}</p>
+        {paymentStatus === PaymentStatus.Overdue && (
+          <p className="text-sm text-gray-dark font-bold decoration-slice">
+            {statusText[paymentStatus]}
+          </p>
+        )}
+        {generalStatus && (
+          <p className="text-xs text-gray-dark font-semibold">{statusText[generalStatus]}</p>
+        )}
       </div>
+      <LinkSquare01Icon
+        className="text-primaryDarkBg cursor-pointer self-end"
+        size={24}
+      />
     </div>
   );
 }

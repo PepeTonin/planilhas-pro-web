@@ -1,4 +1,4 @@
-import { AccordionInnerGroup } from "@/utils/sharedTypes";
+import { SubGroup } from "@/utils/sharedTypes";
 import { PlusSignSquareIcon } from "hugeicons-react";
 
 import Icon from "./Icon";
@@ -8,7 +8,7 @@ import { ISelectedItem } from "../Layout/Sidebar";
 interface AccordionProps {
   id: number;
   label: string;
-  innerItems: AccordionInnerGroup[];
+  innerItems: SubGroup[];
   openedAccordionItem: number;
   onAccordionArrowIconClick: (id: number) => void;
   onGroupClick: (id: number) => void;
