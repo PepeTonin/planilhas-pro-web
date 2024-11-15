@@ -51,7 +51,31 @@ export interface TrainingDescription {
   description: string;
 }
 
+export interface Training {
+  id: number;
+  title: string;
+  movements: TrainingMovement[];
+}
+
 export interface WorkoutPlanModel {
   id: number;
   title: string;
+}
+
+export interface TrainingBlock {
+  id: number;
+  title: string;
+  linkedTraining: Training;
+}
+
+export interface WorkoutPlanBlock {
+  id: number;
+  title: string;
+  trainingBlocks: TrainingBlock[];
+}
+
+export interface WorkoutPlan {
+  id: number;
+  title: string;
+  blocks: WorkoutPlanBlock[];
 }

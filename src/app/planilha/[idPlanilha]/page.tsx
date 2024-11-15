@@ -5,8 +5,8 @@ import { PlusSignIcon } from "hugeicons-react";
 
 import {
   TrainCategory,
-  TrainingDescription,
-  TrainingMovement,
+  TrainingBlock,
+  WorkoutPlanBlock,
   WorkoutPlanModel,
 } from "@/utils/sharedTypes";
 
@@ -14,7 +14,11 @@ import ContentHeader from "@/components/ContentHeader";
 import CardTraining from "@/components/CardTraining";
 import ContentFooter from "@/components/ContentFooter";
 
-import { mockedCategories, mockedModels } from "@/data/mockedData";
+import {
+  mockedCategories,
+  mockedModels,
+  mockedTrainings,
+} from "@/data/mockedData";
 
 export interface IPlanilhaRouteParams {
   params: {
@@ -28,26 +32,26 @@ export default function DetalhesPlanilha({ params }: IPlanilhaRouteParams) {
 
   const [selectedModel, setSelectedModel] = useState<WorkoutPlanModel>();
 
-  const [trainingMovements, setTrainingMovements] =
-    useState<TrainingMovement[]>();
+  const [workoutPlanBlocks, setWorkoutPlanBlocks] =
+    useState<WorkoutPlanBlock[]>();
 
-  const [newIdTrainingMovement, setNewIdTrainingMovement] = useState<number>(0);
+  const [newIdWorkoutPlanBlock, setNewIdWorkoutPlanBlock] = useState<number>(0);
 
-  const [descriptionSelectedTrainingMov, setDescriptionSelectedTrainingMov] =
-    useState<TrainingDescription[]>();
+  const [selectedTrainingBlocks, setSelectedTrainingBlocks] =
+    useState<TrainingBlock[]>();
 
-  const [newIdDescription, setNewIdDescription] = useState<number>(0);
+  const [newTrainingBlockId, setNewTrainingBlockId] = useState<number>(0);
 
-  const [idSelectedTrainingMovement, setIdSelectedTrainingMovement] =
+  const [idSelectedWorkoutPlanBlock, setIdSelectedWorkoutPlanBlock] =
     useState(-1);
 
-  const [trainingMovTitle, setTrainingMovTitle] = useState("");
+  const [workoutPlanBlockTitle, setWorkoutPlanBlockTitle] = useState("");
 
   useEffect(() => {
-    if (!trainingMovements || trainingMovements.length === 0) {
-      setIdSelectedTrainingMovement(-1);
+    if (!workoutPlanBlocks || workoutPlanBlocks.length === 0) {
+      setIdSelectedWorkoutPlanBlock(-1);
     }
-  }, [trainingMovements]);
+  }, [workoutPlanBlocks]);
 
   const router = useRouter();
 
@@ -70,157 +74,197 @@ export default function DetalhesPlanilha({ params }: IPlanilhaRouteParams) {
     setSelectedModel(model);
   }
 
-  function handleCreateNewTrainingMovement() {
-    if (!trainingMovements) {
-      const newTrainingMovement: TrainingMovement = {
-        id: newIdTrainingMovement,
-        title: "Novo movimento",
-        description: [],
+  function handleCreateNewWorkoutPlanBlock() {
+    if (!workoutPlanBlocks) {
+      const newWorkoutPlanBlock: WorkoutPlanBlock = {
+        id: newIdWorkoutPlanBlock,
+        title: "Novo bloco",
+        trainingBlocks: [],
       };
-      setNewIdTrainingMovement((prev) => prev + 1);
-      return setTrainingMovements([newTrainingMovement]);
+      setNewIdWorkoutPlanBlock((prev) => prev + 1);
+      return setWorkoutPlanBlocks([newWorkoutPlanBlock]);
     }
-    const newTrainingMovement: TrainingMovement = {
-      id: newIdTrainingMovement,
-      title: "Novo movimento",
-      description: [],
+    const newWorkoutPlanBlock: WorkoutPlanBlock = {
+      id: newIdWorkoutPlanBlock,
+      title: "Novo bloco",
+      trainingBlocks: [],
     };
-    setNewIdTrainingMovement((prev) => prev + 1);
-    return setTrainingMovements((prev) => [...prev!, newTrainingMovement]);
+    setNewIdWorkoutPlanBlock((prev) => prev + 1);
+    return setWorkoutPlanBlocks((prev) => [...prev!, newWorkoutPlanBlock]);
   }
 
-  function handleSelectTrainingMovement(trainingMovId: number) {
-    setIdSelectedTrainingMovement(trainingMovId);
-    const selectedMovement = trainingMovements?.find(
-      (trainingMovement) => trainingMovement.id === trainingMovId
+  function handleSelectWorkoutPlanBlock(workoutPlanBlockId: number) {
+    setIdSelectedWorkoutPlanBlock(workoutPlanBlockId);
+    const selectedBlock = workoutPlanBlocks?.find(
+      (trainingMovement) => trainingMovement.id === workoutPlanBlockId
     );
-    const description = selectedMovement?.description;
-    if (description) setDescriptionSelectedTrainingMov(description);
-    const title = selectedMovement?.title;
-    if (title) setTrainingMovTitle(title);
+    const trainingBlocks = selectedBlock?.trainingBlocks;
+    if (trainingBlocks) setSelectedTrainingBlocks(trainingBlocks);
+    const title = selectedBlock?.title;
+    if (title) setWorkoutPlanBlockTitle(title);
   }
 
-  function handleDeleteItemFromTrainingMovements(trainingMovId: number) {
-    if (!trainingMovements) return;
-    const filteredTrainingMovements = trainingMovements.filter(
-      (trainingMovement) => trainingMovement.id !== trainingMovId
+  function handleDeleteItemFromWorkoutPlan(workoutPlanBlockId: number) {
+    if (!workoutPlanBlocks) return;
+    const filteredWorkoutPlanBlocks = workoutPlanBlocks.filter(
+      (workoutPlanBlock) => workoutPlanBlock.id !== workoutPlanBlockId
     );
-    setTrainingMovements(filteredTrainingMovements);
+    setWorkoutPlanBlocks(filteredWorkoutPlanBlocks);
   }
 
-  function handleAddNewDescriptionToMov(trainingMovId: number) {
-    if (!trainingMovements) return;
-    const newDescription = {
-      id: newIdDescription,
-      description: "",
-    };
-    setNewIdDescription((prev) => prev + 1);
-    const updatedTrainingMovements = trainingMovements.map(
-      (trainingMovement) => {
-        if (trainingMovement.id === trainingMovId) {
+  function handleCreateNewTrainingBlock(workoutPlanBlockId: number) {
+    if (!workoutPlanBlocks) return;
+    const newTrainingBlock = {
+      id: newTrainingBlockId,
+      title: "",
+      linkedTraining: {},
+    } as TrainingBlock;
+    setNewTrainingBlockId((prev) => prev + 1);
+    const updatedWorkoutPlanBlocks = workoutPlanBlocks.map(
+      (workoutPlanBlock) => {
+        if (workoutPlanBlock.id === workoutPlanBlockId) {
           if (
-            !trainingMovement.description ||
-            trainingMovement.description.length === 0
+            !workoutPlanBlock.trainingBlocks ||
+            workoutPlanBlock.trainingBlocks.length === 0
           ) {
             return {
-              ...trainingMovement,
-              description: [newDescription],
+              ...workoutPlanBlock,
+              trainingBlocks: [newTrainingBlock],
             };
           }
           return {
-            ...trainingMovement,
-            description: [...trainingMovement.description, newDescription],
+            ...workoutPlanBlock,
+            trainingBlocks: [
+              ...workoutPlanBlock.trainingBlocks,
+              newTrainingBlock,
+            ],
           };
         }
-        return trainingMovement;
+        return workoutPlanBlock;
       }
     );
-    setTrainingMovements(updatedTrainingMovements);
-    setDescriptionSelectedTrainingMov((prev) =>
-      prev ? [...prev, newDescription] : [newDescription]
+    setWorkoutPlanBlocks(updatedWorkoutPlanBlocks);
+    setSelectedTrainingBlocks((prev) =>
+      prev ? [...prev, newTrainingBlock] : [newTrainingBlock]
     );
   }
 
-  function handleDeleteDescriptionItem(
-    descriptionId: number,
-    trainingMovId: number
+  function handleDeleteTrainingBlockItem(
+    trainingBlockId: number,
+    workoutPlanBlockId: number
   ) {
-    if (!trainingMovements) return;
-    const updatedTrainingMovements = trainingMovements.map(
-      (trainingMovement) => {
-        if (trainingMovement.id === trainingMovId) {
-          const updatedDescription = trainingMovement.description.filter(
-            (description) => description.id !== descriptionId
+    if (!workoutPlanBlocks) return;
+    const updatedWorkoutPlanBlocks = workoutPlanBlocks.map(
+      (workoutPlanBlock) => {
+        if (workoutPlanBlock.id === workoutPlanBlockId) {
+          const updatedTrainingBlocks = workoutPlanBlock.trainingBlocks.filter(
+            (trainingBlock) => trainingBlock.id !== trainingBlockId
           );
           return {
-            ...trainingMovement,
-            description: updatedDescription,
+            ...workoutPlanBlock,
+            trainingBlocks: updatedTrainingBlocks,
           };
         }
-        return trainingMovement;
+        return workoutPlanBlock;
       }
     );
-    setTrainingMovements(updatedTrainingMovements);
-    setDescriptionSelectedTrainingMov((prev) =>
-      prev?.filter((description) => description.id !== descriptionId)
+    setWorkoutPlanBlocks(updatedWorkoutPlanBlocks);
+    setSelectedTrainingBlocks((prev) =>
+      prev?.filter((trainingBlock) => trainingBlock.id !== trainingBlockId)
     );
   }
 
-  function handleSetTrainingMovTitle(id: number, title: string) {
-    if (!trainingMovements) return;
-    setTrainingMovTitle(title);
-    const updatedTrainingMovements = trainingMovements.map(
-      (trainingMovement) => {
-        if (trainingMovement.id === id) {
+  function handleSetWorkoutPlanBlockTitle(id: number, title: string) {
+    if (!workoutPlanBlocks) return;
+    setWorkoutPlanBlockTitle(title);
+    const updatedWorkoutPlanBlocks = workoutPlanBlocks.map(
+      (workoutPlanBlock) => {
+        if (workoutPlanBlock.id === id) {
           return {
-            ...trainingMovement,
+            ...workoutPlanBlock,
             title: title,
           };
         }
-        return trainingMovement;
+        return workoutPlanBlock;
       }
     );
-    setTrainingMovements(updatedTrainingMovements);
+    setWorkoutPlanBlocks(updatedWorkoutPlanBlocks);
   }
 
-  function handleSetNewDescriptionToTrainingMov(
-    idTrainingMov: number,
-    idDescription: number,
-    description: string
+  function handleSetNewTitleToTrainingBlock(
+    idWorkoutPlanBlock: number,
+    idTrainingBlock: number,
+    newTitle: string
   ) {
-    if (!trainingMovements) return;
-    const updatedTrainingMovements = trainingMovements.map(
-      (trainingMovement) => {
-        if (trainingMovement.id === idTrainingMov) {
-          const updatedDescription = trainingMovement.description.map(
-            (descriptionItem) => {
-              if (descriptionItem.id === idDescription) {
+    if (!workoutPlanBlocks) return;
+    const updatedWorkouPlanBlocks = workoutPlanBlocks.map(
+      (workoutPlanBlock) => {
+        if (workoutPlanBlock.id === idWorkoutPlanBlock) {
+          const updatedTrainingBlocks = workoutPlanBlock.trainingBlocks.map(
+            (trainingBlock) => {
+              if (trainingBlock.id === idTrainingBlock) {
                 return {
-                  ...descriptionItem,
-                  description: description,
+                  ...trainingBlock,
+                  title: newTitle,
                 };
               }
-              return descriptionItem;
+              return trainingBlock;
             }
           );
           return {
-            ...trainingMovement,
-            description: updatedDescription,
+            ...workoutPlanBlock,
+            trainingBlocks: updatedTrainingBlocks,
           };
         }
-        return trainingMovement;
+        return workoutPlanBlock;
       }
     );
-    setTrainingMovements(updatedTrainingMovements);
+    setWorkoutPlanBlocks(updatedWorkouPlanBlocks);
+  }
+
+  function handleSelectTrainingInModal(
+    idTrainingBlock: number,
+    idSelectedTraining: number,
+    titleSelectedTraining: string
+  ) {
+    if (!workoutPlanBlocks) return;
+    const updatedWorkoutPlanBlocks = workoutPlanBlocks.map(
+      (workoutPlanBlock) => {
+        if (workoutPlanBlock.id === idSelectedWorkoutPlanBlock) {
+          const updatedTrainingBlocks = workoutPlanBlock.trainingBlocks.map(
+            (trainingBlock) => {
+              if (trainingBlock.id === idTrainingBlock) {
+                return {
+                  ...trainingBlock,
+                  linkedTraining: {
+                    id: idSelectedTraining,
+                    title: titleSelectedTraining,
+                    movements: [],
+                  },
+                };
+              }
+              return trainingBlock;
+            }
+          );
+          return {
+            ...workoutPlanBlock,
+            trainingBlocks: updatedTrainingBlocks,
+          };
+        }
+        return workoutPlanBlock;
+      }
+    );
+    setWorkoutPlanBlocks(updatedWorkoutPlanBlocks);
   }
 
   function handleSaveWorkoutPlan() {
-    console.log();
+    console.log(workoutPlanBlocks);
   }
 
   function handleLinkToStudent() {
     router.push(`/planilha/${params.idPlanilha}/vincular`);
   }
+
   return (
     <div className="p-6 flex flex-1 flex-col overflow-y-auto h-[calc(100vh-5rem)] scrollbar-custom">
       <ContentHeader
@@ -233,76 +277,74 @@ export default function DetalhesPlanilha({ params }: IPlanilhaRouteParams) {
         selectedModel={selectedModel}
         handleSelectModel={handleSelectModel}
       />
-      
 
-      {/* alterar essa parte para fazer a criação de planilhas */}
       <main className="flex-1 gap-2 flex flex-row items-start py-2">
         <div className="bg-white-f5 w-1/2 rounded-lg p-2 gap-2 flex flex-col">
-          {trainingMovements &&
-            trainingMovements.length > 0 &&
-            trainingMovements.map((movement) => (
+          {workoutPlanBlocks &&
+            workoutPlanBlocks.length > 0 &&
+            workoutPlanBlocks.map((workoutPlanBlock) => (
               <CardTraining
-                key={movement.id}
-                idTrainingMov={movement.id}
-                variation="training-movement"
-                innerText={movement.title}
-                selectedItem={idSelectedTrainingMovement}
-                handleSelect={handleSelectTrainingMovement}
-                handleDeleteTrainingMov={handleDeleteItemFromTrainingMovements}
+                key={workoutPlanBlock.id}
+                variation="workout-plan-block"
+                idPrimaryItem={workoutPlanBlock.id}
+                innerText={workoutPlanBlock.title}
+                selectedItem={idSelectedWorkoutPlanBlock}
+                handleSelect={handleSelectWorkoutPlanBlock}
+                handleDeletePrimaryItem={handleDeleteItemFromWorkoutPlan}
               />
             ))}
 
           <div
-            onClick={handleCreateNewTrainingMovement}
+            onClick={handleCreateNewWorkoutPlanBlock}
             className="bg-primaryDarkBg rounded-md text-white-f5 flex flex-row px-2 py-1 justify-center cursor-pointer gap-2"
           >
             <PlusSignIcon />
-            <p>Novo movimento</p>
+            <p>Novo bloco</p>
           </div>
         </div>
 
-        {idSelectedTrainingMovement !== -1 && (
+        {idSelectedWorkoutPlanBlock !== -1 && (
           <div className="bg-gray-light w-1/2 rounded-lg p-2 gap-2 flex flex-col">
             <div className="flex flex-row gap-2 text-white-f5 font-semibold text-lg">
               <input
                 className="bg-transparent outline-none text-white-f5 min-w-10 max-h-full placeholder:text-gray-medium w-full caret-gray-medium"
                 placeholder="Título"
-                value={trainingMovTitle}
+                value={workoutPlanBlockTitle}
                 onChange={(e) =>
-                  handleSetTrainingMovTitle(
-                    idSelectedTrainingMovement,
+                  handleSetWorkoutPlanBlockTitle(
+                    idSelectedWorkoutPlanBlock,
                     e.target.value
                   )
                 }
               />
             </div>
 
-            {descriptionSelectedTrainingMov &&
-              descriptionSelectedTrainingMov.length > 0 &&
-              descriptionSelectedTrainingMov.map((description) => (
+            {selectedTrainingBlocks &&
+              selectedTrainingBlocks.length > 0 &&
+              selectedTrainingBlocks.map((trainingBlock) => (
                 <CardTraining
-                  key={description.id}
-                  idTrainingMov={idSelectedTrainingMovement}
-                  idDescriptionItem={description.id}
-                  variation="training-description"
-                  innerText={description.description}
-                  selectedItem={0}
-                  handleSelect={() => {}}
-                  handleDeleteDescriptionItem={handleDeleteDescriptionItem}
-                  handleUpdateDescriptionItem={
-                    handleSetNewDescriptionToTrainingMov
+                  key={trainingBlock.id}
+                  variation="workout-plan-training-block"
+                  idPrimaryItem={idSelectedWorkoutPlanBlock}
+                  idSecondaryItem={trainingBlock.id}
+                  innerText={trainingBlock.title}
+                  handleDeleteSecondaryItem={handleDeleteTrainingBlockItem}
+                  handleUpdateTextSecondaryItem={
+                    handleSetNewTitleToTrainingBlock
                   }
+                  trainingData={mockedTrainings}
+                  handleSelectTraining={handleSelectTrainingInModal}
                 />
               ))}
 
             <div
               onClick={() =>
-                handleAddNewDescriptionToMov(idSelectedTrainingMovement)
+                handleCreateNewTrainingBlock(idSelectedWorkoutPlanBlock)
               }
               className="bg-gray-dark rounded-md text-white-f5 flex flex-row px-2 py-1 justify-center cursor-pointer gap-2"
             >
               <PlusSignIcon />
-              <p>Nova descrição</p>
+              <p>Novo bloco de treino</p>
             </div>
           </div>
         )}

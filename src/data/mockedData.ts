@@ -6,6 +6,7 @@ import {
   Student,
   TrainCategory,
   WorkoutPlanModel,
+  Training,
 } from "../utils/sharedTypes";
 
 export const mockedGroups: Group[] = [
@@ -366,10 +367,114 @@ export const mockedModels: WorkoutPlanModel[] = [
   },
   {
     id: 4,
-    title: "NOME MUITO GRANDEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE",
+    title:
+      "NOME MUITO GRANDEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE",
   },
   {
     id: 5,
     title: "Modelo 5",
+  },
+];
+
+export const mockedTrainings: Training[] = [
+  {
+    id: 1,
+    title: "Pista Avançado 20x400",
+    movements: [],
+  },
+  {
+    id: 2,
+    title: "Peito Intermediário na Academia",
+    movements: [],
+  },
+  {
+    id: 3,
+    title: "Natação 40x50 Ritmo Sustentável",
+    movements: [],
+  },
+  {
+    id: 4,
+    title: "Crossfit AMRAP 20 Min",
+    movements: [],
+  },
+  {
+    id: 5,
+    title: "Corrida Fartlek 15km Longa Distância",
+    movements: [],
+  },
+  {
+    id: 6,
+    title: "Funcional Resistência",
+    movements: [],
+  },
+  {
+    id: 7,
+    title: "Pernas Avançado",
+    movements: [],
+  },
+  {
+    id: 8,
+    title: "Ciclismo Moderado 30km",
+    movements: [],
+  },
+  {
+    id: 9,
+    title: "Ombros e Trapézio Intermediário na Academia",
+    movements: [],
+  },
+  {
+    id: 10,
+    title: "HIIT 15 Min Explosivo",
+    movements: [],
+  },
+  {
+    id: 11,
+    title: "Costas Avançado",
+    movements: [],
+  },
+  {
+    id: 12,
+    title: "Natação Livre Rápido 10x100",
+    movements: [],
+  },
+  {
+    id: 13,
+    title: "Core",
+    movements: [],
+  },
+  {
+    id: 14,
+    title: "Flexibilidade e Mobilidade Flexibilidade e Mobilidade Flexibilidade e Mobilidade Flexibilidade e Mobilidade Flexibilidade e Mobilidade",
+    movements: [],
+  },
+  {
+    id: 15,
+    title: "Intervalado Corrida 5x800",
+    movements: [],
+  },
+  {
+    id: 16,
+    title: "Full Body Iniciante",
+    movements: [],
+  },
+  {
+    id: 17,
+    title: "Crossfit EMOM 15",
+    movements: [],
+  },
+  {
+    id: 18,
+    title: "Pedalada 50km Resistência",
+    movements: [],
+  },
+  {
+    id: 19,
+    title: "Braços Foco em Força",
+    movements: [],
+  },
+  {
+    id: 20,
+    title: "Sprint Natação 20x25",
+    movements: [],
   },
 ];

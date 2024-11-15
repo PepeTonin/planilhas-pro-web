@@ -245,12 +245,12 @@ export default function DetalhesTreino({ params }: ITreinoRouteParams) {
             trainingMovements.map((movement) => (
               <CardTraining
                 key={movement.id}
-                idTrainingMov={movement.id}
                 variation="training-movement"
+                idPrimaryItem={movement.id}
                 innerText={movement.title}
                 selectedItem={idSelectedTrainingMovement}
                 handleSelect={handleSelectTrainingMovement}
-                handleDeleteTrainingMov={handleDeleteItemFromTrainingMovements}
+                handleDeletePrimaryItem={handleDeleteItemFromTrainingMovements}
               />
             ))}
 
@@ -284,14 +284,12 @@ export default function DetalhesTreino({ params }: ITreinoRouteParams) {
               descriptionSelectedTrainingMov.map((description) => (
                 <CardTraining
                   key={description.id}
-                  idTrainingMov={idSelectedTrainingMovement}
-                  idDescriptionItem={description.id}
                   variation="training-description"
+                  idPrimaryItem={idSelectedTrainingMovement}
+                  idSecondaryItem={description.id}
                   innerText={description.description}
-                  selectedItem={0}
-                  handleSelect={() => {}}
-                  handleDeleteDescriptionItem={handleDeleteDescriptionItem}
-                  handleUpdateDescriptionItem={
+                  handleDeleteSecondaryItem={handleDeleteDescriptionItem}
+                  handleUpdateTextSecondaryItem={
                     handleSetNewDescriptionToTrainingMov
                   }
                 />

@@ -35,7 +35,7 @@ export default function ModelsMenu({
 
   return (
     <div
-      className="absolute w-[400px] right-[286px] top-[274px] flex flex-col bg-white-f5 rounded-md p-2"
+      className="absolute w-[400px] left-[342px] top-[274px] flex flex-col bg-white-f5 rounded-md p-2"
       ref={innerRef}
     >
       {data.map((model) => (
