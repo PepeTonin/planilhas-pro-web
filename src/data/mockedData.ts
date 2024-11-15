@@ -5,6 +5,7 @@ import {
   PaymentStatus,
   Student,
   TrainCategory,
+  WorkoutPlanModel,
 } from "../utils/sharedTypes";
 
 export const mockedGroups: Group[] = [
@@ -347,5 +348,28 @@ export const mockedCategories: TrainCategory[] = [
   {
     id: 14,
     label: "Ciclismo",
-  }
+  },
+];
+
+export const mockedModels: WorkoutPlanModel[] = [
+  {
+    id: 1,
+    title: "Modelo 1",
+  },
+  {
+    id: 2,
+    title: "Modelo 2",
+  },
+  {
+    id: 3,
+    title: "Modelo 3",
+  },
+  {
+    id: 4,
+    title: "NOME MUITO GRANDEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE",
+  },
+  {
+    id: 5,
+    title: "Modelo 5",
+  },
 ];

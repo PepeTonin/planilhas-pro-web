@@ -1,9 +1,9 @@
-import { RefObject, useEffect, useRef } from "react";
+import { RefObject, useEffect } from "react";
 import { Cancel01Icon } from "hugeicons-react";
 
 import { TrainCategory } from "@/utils/sharedTypes";
 
-interface CategoriesMenu {
+interface CategoriesMenuProps {
   data: TrainCategory[];
   innerRef: RefObject<HTMLDivElement>;
   setIsCategoriesMenuOpen: (value: boolean) => void;
@@ -15,19 +15,19 @@ export default function CategoriesMenu({
   innerRef,
   setIsCategoriesMenuOpen,
   onSelectCategory,
-}: CategoriesMenu) {
-  const handleClickOutside = (event: MouseEvent) => {
-    if (innerRef.current && !innerRef.current.contains(event.target as Node)) {
-      setIsCategoriesMenuOpen(false);
-    }
-  };
-
+}: CategoriesMenuProps) {
   useEffect(() => {
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
+
+  function handleClickOutside(event: MouseEvent) {
+    if (innerRef.current && !innerRef.current.contains(event.target as Node)) {
+      setIsCategoriesMenuOpen(false);
+    }
+  }
 
   function handleSelectCategory(category: TrainCategory) {
     onSelectCategory(category);

@@ -39,3 +39,19 @@ export interface TrainCategory {
   id: number;
   label: string;
 }
+
+export interface TrainingMovement {
+  id: number;
+  title: string;
+  description: TrainingDescription[];
+}
+
+export interface TrainingDescription {
+  id: number;
+  description: string;
+}
+
+export interface WorkoutPlanModel {
+  id: number;
+  title: string;
+}
