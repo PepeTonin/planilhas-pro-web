@@ -4,7 +4,7 @@ interface PrimaryButtonProps {
   disabled?: boolean;
   isLoading?: boolean;
   fullWidth?: boolean;
-  variation?: "green-bg" | "white-bg" | "light-gray-bg";
+  variation?: "red-bg" | "green-bg" | "white-bg" | "light-gray-bg";
 }
 
 export default function PrimaryButton({
@@ -17,6 +17,7 @@ export default function PrimaryButton({
     "green-bg": "bg-primaryGreen",
     "white-bg": "bg-white-f5",
     "light-gray-bg": "bg-gray-light",
+    "red-bg": "bg-red",
   };
   return (
     <button

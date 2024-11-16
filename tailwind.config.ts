@@ -1,11 +1,11 @@
-import {nextui} from '@nextui-org/theme';
+import { nextui } from "@nextui-org/theme";
 import type { Config } from "tailwindcss";
 
 const config: Config = {
   content: [
     "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
-    "./node_modules/@nextui-org/theme/dist/components/modal.js"
+    "./node_modules/@nextui-org/theme/dist/components/(date-picker|modal|button|ripple|spinner|calendar|date-input|popover).js",
   ],
   theme: {
     extend: {
@@ -28,6 +28,20 @@ const config: Config = {
       },
     },
   },
-  plugins: [nextui()],
+  plugins: [
+    nextui({
+      themes: {
+        light: {
+          colors: {
+            primary: {
+              DEFAULT: "#BBF246",
+              foreground: "#000000",
+              "50": "#192126",
+            },
+          },
+        },
+      },
+    }),
+  ],
 };
 export default config;
