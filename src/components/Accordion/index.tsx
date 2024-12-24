@@ -2,7 +2,7 @@ import { PlusSignSquareIcon } from "hugeicons-react";
 
 import Icon from "./Icon";
 
-import { ISelectedItem } from "../Layout/Sidebar";
+import { ISelectedItem, ModalType } from "../Layout/Sidebar";
 import { FetchedSubGroup } from "@/types/groups";
 
 interface AccordionProps {
@@ -14,6 +14,7 @@ interface AccordionProps {
   onGroupClick: (id: number) => void;
   onSubGroupClick: (parentId: number, itemId: number) => void;
   selectedItem: ISelectedItem;
+  onPlusSignClick: (modalType: ModalType, parentGroupId: number) => void;
 }
 
 export default function Accordion({
@@ -25,6 +26,7 @@ export default function Accordion({
   onGroupClick,
   onSubGroupClick,
   selectedItem,
+  onPlusSignClick,
 }: AccordionProps) {
   return (
     <div className="flex flex-col justify-center items-center text-white-f5 w-full">
@@ -43,7 +45,7 @@ export default function Accordion({
           {label}
         </p>
         <PlusSignSquareIcon
-          onClick={() => console.log("plus sign click", id)}
+          onClick={() => onPlusSignClick(ModalType.CREATE_SUBGROUP, id)}
         />
       </div>
       {id === openedAccordionItem && innerItems.length > 0 && (

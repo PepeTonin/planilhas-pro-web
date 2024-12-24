@@ -33,7 +33,7 @@ export default function Home() {
 
   function loginProfessor() {
     const userToLogin: ReqUserLogin = {
-      email: "carlos.silva@exemplo.com",
+      email: "joao.silva@email.com",
       senha: "senha123",
     };
     dispatch(login(userToLogin));

@@ -15,3 +15,33 @@ export async function getAllGroupsByIdProfessor(
     );
   }
 }
+
+export async function createNewGroup(
+  idProfessor: number,
+  nome: string
+): Promise<number | undefined> {
+  try {
+    const response = await axios.post("/novo/grupo", {
+      idProfessor,
+      nome,
+    });
+    return response.data;
+  } catch (error) {
+    console.log("error in src/api/grupos.ts/createNewGroup():", error);
+  }
+}
+
+export async function createNewSubgroup(
+  idGrupo: number,
+  nome: string
+): Promise<number | undefined> {
+  try {
+    const response = await axios.post("/novo/subgrupo", {
+      idGrupo,
+      nome,
+    });
+    return response.data;
+  } catch (error) {
+    console.log("error in src/api/grupos.ts/createNewSubgroup():", error);
+  }
+}
