@@ -7,7 +7,7 @@ import {
   TrainCategory,
   WorkoutPlanModel,
   Training,
-} from "../utils/sharedTypes";
+} from "../utils/tempTypes";
 
 export const mockedGroups: Group[] = [
   {
@@ -475,6 +475,16 @@ export const mockedTrainings: Training[] = [
   {
     id: 20,
     title: "Sprint Natação 20x25",
+    movements: [],
+  },
+  {
+    id: 21,
+    title: "Peito e triceps",
+    movements: [],
+  },
+  {
+    id: 22,
+    title: "Corrida intervalada iniciante",
     movements: [],
   },
 ];

@@ -5,7 +5,7 @@ const config: Config = {
   content: [
     "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
-    "./node_modules/@nextui-org/theme/dist/components/(date-picker|modal|button|ripple|spinner|calendar|date-input|popover).js",
+    "./node_modules/@nextui-org/theme/dist/components/(date-picker|modal|spinner|button|ripple|calendar|date-input|popover).js"
   ],
   theme: {
     extend: {

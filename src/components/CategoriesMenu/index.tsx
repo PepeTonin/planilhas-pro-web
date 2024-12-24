@@ -1,7 +1,7 @@
 import { RefObject, useEffect } from "react";
 import { Cancel01Icon } from "hugeicons-react";
 
-import { TrainCategory } from "@/utils/sharedTypes";
+import { TrainCategory } from "@/utils/tempTypes";
 
 interface CategoriesMenuProps {
   data: TrainCategory[];

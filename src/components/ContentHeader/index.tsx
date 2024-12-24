@@ -1,7 +1,7 @@
 import { useRef, useState } from "react";
 import { PlusSignSquareIcon, ArrowDown01Icon } from "hugeicons-react";
 
-import { TrainCategory, WorkoutPlanModel } from "@/utils/sharedTypes";
+import { TrainCategory, WorkoutPlanModel } from "@/utils/tempTypes";
 
 import CategoriesMenu from "../CategoriesMenu";
 import CategoryTag from "../CategoryTag";
@@ -74,7 +74,7 @@ export default function ContentHeader({
       <div className="flex flex-row gap-2 text-gray-light font-medium text-lg">
         <p onClick={() => descriptionRef.current?.focus()}>Descrição: </p>
         <input
-          className="bg-transparent outline-none text-white-f5 min-w-10 max-h-full placeholder:text-gray-medium caret-gray-medium"
+          className="flex-1 bg-transparent outline-none text-white-f5 min-w-10 max-h-full placeholder:text-gray-medium caret-gray-medium"
           ref={descriptionRef}
           placeholder={VariationObject[variation].descriptionPlaceholder}
         />

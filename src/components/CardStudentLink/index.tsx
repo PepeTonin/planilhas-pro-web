@@ -1,4 +1,4 @@
-import { Student } from "@/utils/sharedTypes";
+import { Student } from "@/utils/tempTypes";
 import { Delete04Icon } from "hugeicons-react";
 
 interface CardStudentLinkProps {

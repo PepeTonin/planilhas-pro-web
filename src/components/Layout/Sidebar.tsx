@@ -1,7 +1,11 @@
+import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { PlusSignSquareIcon } from "hugeicons-react";
 import { useAppDispatch, useAppSelector } from "@/store/store";
+import { Spinner } from "@nextui-org/spinner";
+
 import {
+  getSidebarGroups,
   setAccordionGroupOpened,
   setIsManagementSelected,
   setItemSubGroupSelected,
@@ -10,8 +14,6 @@ import {
 import Accordion from "../Accordion";
 import PrimaryButton from "../PrimaryButton";
 
-import { mockedGroups } from "@/data/mockedData";
-
 export interface ISelectedItem {
   parentId: number;
   itemId: number;
@@ -19,12 +21,14 @@ export interface ISelectedItem {
 
 export default function Sidebar() {
   const router = useRouter();
-
   const dispatch = useAppDispatch();
+  const { user } = useAppSelector((state) => state.auth);
   const {
     accordionGroupOpened,
     isManagementSelected,
-    itemGroupSelected: itemSubGroupSelected,
+    itemGroupSelected,
+    groups,
+    loadingGroups,
   } = useAppSelector((state) => state.sidebar);
 
   function onManagementClick() {
@@ -76,11 +80,19 @@ export default function Sidebar() {
     router.push(`/planilha/${newId}`);
   }
 
+  useEffect(() => {
+    if (user) {
+      dispatch(getSidebarGroups(user.id));
+    }
+  }, [user]);
+
+  console.log("groups", groups);
+
   return (
     <main className="h-full w-60 border-r border-gray-light flex flex-col justify-between items-center">
       <div className="flex flex-col pt-8 w-52 gap-4">
         <p
-          className={`text-left font-bold text-xl hover:cursor-pointer ${
+          className={`cursor-pointer hover:opacity-80 text-left font-bold text-xl ${
             isManagementSelected ? "text-primaryGreen" : "text-white-f5"
           }`}
           onClick={onManagementClick}
@@ -91,19 +103,23 @@ export default function Sidebar() {
           <p className="text-left font-bold text-xl ">MEUS GRUPOS</p>
           <PlusSignSquareIcon className="hover:cursor-pointer" />
         </div>
-        {mockedGroups.map((item) => (
-          <Accordion
-            key={item.id}
-            id={item.id}
-            label={item.label}
-            innerItems={item.subGroups}
-            openedAccordionItem={accordionGroupOpened}
-            onAccordionArrowIconClick={onAccordionArrowIconClick}
-            onGroupClick={onGroupClick}
-            onSubGroupClick={onSubGroupClick}
-            selectedItem={itemSubGroupSelected}
-          />
-        ))}
+        {loadingGroups && <Spinner />}
+        {!loadingGroups &&
+          groups &&
+          groups.length > 0 &&
+          groups.map((item) => (
+            <Accordion
+              key={item.id}
+              id={item.id}
+              label={item.nome}
+              innerItems={item.subGrupos}
+              openedAccordionItem={accordionGroupOpened}
+              onAccordionArrowIconClick={onAccordionArrowIconClick}
+              onGroupClick={onGroupClick}
+              onSubGroupClick={onSubGroupClick}
+              selectedItem={itemGroupSelected}
+            />
+          ))}
       </div>
       <div className="flex flex-col justify-center items-center pb-8 w-52 gap-4">
         <PrimaryButton

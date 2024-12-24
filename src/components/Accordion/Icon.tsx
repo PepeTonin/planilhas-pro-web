@@ -14,7 +14,7 @@ export default function Icon({ id, open, onClick }: IConProps) {
       stroke="currentColor"
       className={`${
         id === open ? "rotate-180" : ""
-      } h-5 w-5 transition-transform`}
+      } h-5 w-5 transition-transform cursor-pointer hover:opacity-80`}
       onClick={() => onClick(id)}
     >
       <path

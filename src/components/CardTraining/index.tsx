@@ -9,7 +9,7 @@ import {
   useDisclosure,
 } from "@nextui-org/modal";
 
-import { Training } from "@/utils/sharedTypes";
+import { Training } from "@/utils/tempTypes";
 
 type CardTrainingVariationType =
   | "training-movement"
@@ -142,7 +142,7 @@ export default function CardTraining({
         <div className="flex-1 flex flex-col">
           <input
             type="text"
-            placeholder="Título do bloco"
+            placeholder="Título da sessão"
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
             className={`w-full text-white-f5 outline-none ${containerBgColorObject[variation]}`}

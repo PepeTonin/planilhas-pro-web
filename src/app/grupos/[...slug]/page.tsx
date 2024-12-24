@@ -1,11 +1,16 @@
 "use client";
+import { useEffect, useState } from "react";
 import { notFound, useRouter } from "next/navigation";
 import { ArrowRight02Icon } from "hugeicons-react";
 
-import CardStudentInGroup from "@/components/CardStudentInGroup";
+import { useAppSelector } from "@/store/store";
 
-import { mockedStudents, mockedGroups } from "@/data/mockedData";
-import { useEffect, useState } from "react";
+import { getStudentsByGroup } from "@/api/students";
+
+import { Student } from "@/types/students";
+
+import CardStudentInGroup from "@/components/CardStudentInGroup";
+import LoadingFeedback from "@/components/LoadingFeedback";
 
 export interface IPlanilhaRouteParams {
   params: {
@@ -14,10 +19,15 @@ export interface IPlanilhaRouteParams {
 }
 
 export default function Grupos({ params }: IPlanilhaRouteParams) {
+  const router = useRouter();
+  const { groups, loadingGroups } = useAppSelector((state) => state.sidebar);
+  const { user } = useAppSelector((state) => state.auth);
+
   const [groupName, setGroupName] = useState("");
   const [subGroupName, setSubGroupName] = useState("");
 
-  const router = useRouter();
+  const [students, setStudents] = useState<Student[]>();
+  const [loadingStudents, setLoadingStudents] = useState(true);
 
   function navigateToAlunoId(id: number) {
     router.push(`/aluno/${id}`);
@@ -35,29 +45,44 @@ export default function Grupos({ params }: IPlanilhaRouteParams) {
     console.log(id);
   }
 
-  function setGroupAndSubGroupNames() {
-    const parentGroup = mockedGroups.find(
+  async function fillData() {
+    const parentGroup = groups.find(
       (group) => group.id === Number(params.slug[0])
     );
-
     if (!parentGroup) return;
-
-    setGroupName(parentGroup.label);
-
-    if (params.slug.length === 1) return;
-
-    const subGroup = parentGroup.subGroups.find(
+    setGroupName(parentGroup.nome);
+    if (params.slug.length === 1) {
+      const response = await getStudentsByGroup(user.id, parentGroup.id);
+      if (response) {
+        setStudents(response);
+        setLoadingStudents(false);
+      }
+      return;
+    }
+    const subGroup = parentGroup.subGrupos.find(
       (subGroup) => subGroup.id === Number(params.slug[1])
     );
-
     if (!subGroup) return;
-
-    setSubGroupName(subGroup.label);
+    setSubGroupName(subGroup.nome);
+    const response = await getStudentsByGroup(
+      user.id,
+      parentGroup.id,
+      subGroup.id
+    );
+    if (response) {
+      setStudents(response);
+      setLoadingStudents(false);
+    }
   }
 
   useEffect(() => {
-    setGroupAndSubGroupNames();
+    setLoadingStudents(true);
+    fillData();
   }, [params.slug]);
+
+  if (loadingGroups || loadingStudents) {
+    return <LoadingFeedback size="lg" label="Carregando..." />;
+  }
 
   return (
     <>
@@ -79,17 +104,19 @@ export default function Grupos({ params }: IPlanilhaRouteParams) {
           </div>
         )}
         <div className="flex flex-wrap justify-between gap-6">
-          {mockedStudents.map((item) => (
-            <CardStudentInGroup
-              key={item.id}
-              name={item.name}
-              id={item.id}
-              onExternalLinkClick={navigateToAlunoId}
-              onCurrentTrainingClick={onCurrentTrainingClick}
-              onInfoClick={onInfoClick}
-              onPreviousTrainingsClick={onPreviousTrainingsClick}
-            />
-          ))}
+          {students &&
+            !loadingStudents &&
+            students.map((item) => (
+              <CardStudentInGroup
+                key={item.id}
+                name={item.nome}
+                id={item.id}
+                onExternalLinkClick={navigateToAlunoId}
+                onCurrentTrainingClick={onCurrentTrainingClick}
+                onInfoClick={onInfoClick}
+                onPreviousTrainingsClick={onPreviousTrainingsClick}
+              />
+            ))}
         </div>
       </div>
     </>

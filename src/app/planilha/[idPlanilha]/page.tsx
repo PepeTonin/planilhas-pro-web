@@ -8,7 +8,7 @@ import {
   TrainingBlock,
   WorkoutPlanBlock,
   WorkoutPlanModel,
-} from "@/utils/sharedTypes";
+} from "@/utils/tempTypes";
 
 import ContentHeader from "@/components/ContentHeader";
 import CardTraining from "@/components/CardTraining";

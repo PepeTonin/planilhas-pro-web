@@ -1,10 +1,10 @@
-import { GeneralStatus, PaymentStatus } from "@/utils/sharedTypes";
-import { LinkSquare01Icon, ArrowRight04Icon } from "hugeicons-react";
+import { TrainingStatus, PaymentStatus } from "@/types/notifications";
+import { LinkSquare01Icon } from "hugeicons-react";
 
 interface CardHomeProps {
   id: number;
   name: string;
-  generalStatus?: GeneralStatus;
+  trainingStatus?: TrainingStatus;
   paymentStatus?: PaymentStatus;
   onClick: (id: number) => void;
 }
@@ -12,20 +12,20 @@ interface CardHomeProps {
 export default function CardHome({
   id,
   name,
-  generalStatus,
+  trainingStatus,
   paymentStatus,
   onClick,
 }: CardHomeProps) {
   const statusText = {
     [PaymentStatus.Overdue]: "Pagamento em atraso",
-    [GeneralStatus.TrainingPending]: "Treinamento pendente",
-    [GeneralStatus.SupportNeeded]: "Suporte necessário",
+    [TrainingStatus.TrainingPending]: "Treinamento pendente",
+    [TrainingStatus.SupportNeeded]: "Suporte necessário",
   };
 
   const statusBgColor = {
     [PaymentStatus.Overdue]: "bg-red",
-    [GeneralStatus.TrainingPending]: "bg-yellow",
-    [GeneralStatus.SupportNeeded]: "bg-yellow",
+    [TrainingStatus.TrainingPending]: "bg-yellow",
+    [TrainingStatus.SupportNeeded]: "bg-yellow",
   };
 
   return (
@@ -34,10 +34,10 @@ export default function CardHome({
       className={`${
         paymentStatus === PaymentStatus.Overdue
           ? statusBgColor[paymentStatus]
-          : generalStatus
-          ? statusBgColor[generalStatus]
+          : trainingStatus
+          ? statusBgColor[trainingStatus]
           : "bg-white-f5"
-      } flex flex-row justify-between items-center w-full py-2 px-4 rounded-lg cursor-pointer`}
+      } flex flex-row justify-between items-center w-full py-2 px-4 rounded-lg cursor-pointer hover:opacity-80`}
     >
       <div className="flex flex-row items-end gap-4">
         <p className="text-primaryDarkBg font-semibold">{name}</p>
@@ -46,8 +46,10 @@ export default function CardHome({
             {statusText[paymentStatus]}
           </p>
         )}
-        {generalStatus && (
-          <p className="text-xs text-gray-dark font-semibold">{statusText[generalStatus]}</p>
+        {trainingStatus && (
+          <p className="text-xs text-gray-dark font-semibold">
+            {statusText[trainingStatus]}
+          </p>
         )}
       </div>
       <LinkSquare01Icon

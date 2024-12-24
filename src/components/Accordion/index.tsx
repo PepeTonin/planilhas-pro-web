@@ -1,14 +1,14 @@
-import { SubGroup } from "@/utils/sharedTypes";
 import { PlusSignSquareIcon } from "hugeicons-react";
 
 import Icon from "./Icon";
 
 import { ISelectedItem } from "../Layout/Sidebar";
+import { FetchedSubGroup } from "@/types/groups";
 
 interface AccordionProps {
   id: number;
   label: string;
-  innerItems: SubGroup[];
+  innerItems: FetchedSubGroup[];
   openedAccordionItem: number;
   onAccordionArrowIconClick: (id: number) => void;
   onGroupClick: (id: number) => void;
@@ -27,7 +27,7 @@ export default function Accordion({
   selectedItem,
 }: AccordionProps) {
   return (
-    <div className="flex flex-col justify-center items-center text-white-f5 w-full hover:cursor-pointer">
+    <div className="flex flex-col justify-center items-center text-white-f5 w-full">
       <div className="flex flex-row w-full justify-between items-center">
         <Icon
           id={id}
@@ -37,7 +37,7 @@ export default function Accordion({
         <p
           className={`${
             selectedItem.parentId === id && "text-primaryGreen"
-          } flex-1 text-left pl-4 font-semibold text-lg truncate`}
+          } flex-1 text-left pl-4 font-semibold text-lg truncate cursor-pointer hover:opacity-80`}
           onClick={() => onGroupClick(id)}
         >
           {label}
@@ -59,7 +59,7 @@ export default function Accordion({
                 key={item.id}
                 onClick={() => onSubGroupClick(id, item.id)}
               >
-                {item.label}
+                {item.nome}
               </p>
             );
           })}

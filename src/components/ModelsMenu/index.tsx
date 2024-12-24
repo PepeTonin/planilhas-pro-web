@@ -1,6 +1,6 @@
-import { RefObject, useEffect, useState } from "react";
+import { RefObject, useEffect } from "react";
 
-import { WorkoutPlanModel } from "@/utils/sharedTypes";
+import { WorkoutPlanModel } from "@/utils/tempTypes";
 
 interface ModelsMenuProps {
   data: WorkoutPlanModel[];

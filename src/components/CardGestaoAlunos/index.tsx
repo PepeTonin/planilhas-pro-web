@@ -1,14 +1,14 @@
 import { LinkSquare01Icon } from "hugeicons-react";
-import Tag from "./Tag";
-import { PaymentStatus } from "@/utils/sharedTypes";
 
-import { mockedGroups } from "@/data/mockedData";
+import { PaymentStatus } from "@/types/notifications";
+
+import Tag from "./Tag";
 
 interface CardGestaoAlunosProps {
   id: number;
   name: string;
-  groupId: number;
-  subGroupId: number;
+  groupName?: string;
+  subGroupName?: string;
   paymentStatus: PaymentStatus;
   onExternalLinkClick: (id: number) => void;
 }
@@ -16,16 +16,12 @@ interface CardGestaoAlunosProps {
 export default function CardGestaoAlunos({
   id,
   name,
-  groupId,
-  subGroupId,
+  groupName,
+  subGroupName,
   paymentStatus,
   onExternalLinkClick,
 }: CardGestaoAlunosProps) {
-  const groupName = mockedGroups.find((group) => group.id === groupId)?.label;
-
-  const subGroupName = mockedGroups
-    .find((group) => group.id === subGroupId)
-    ?.subGroups.find((subGroup) => subGroup.id === subGroupId)?.label;
+  console.log(subGroupName);
 
   return (
     <div className="flex flex-row items-center justify-between bg-white-f5 rounded-lg px-4 py-2">

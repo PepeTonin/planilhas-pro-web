@@ -7,13 +7,13 @@ import {
   TrainCategory,
   TrainingMovement,
   TrainingDescription,
-} from "@/utils/sharedTypes";
+} from "@/utils/tempTypes";
 
 import ContentHeader from "@/components/ContentHeader";
 import CardTraining from "@/components/CardTraining";
+import ContentFooter from "@/components/ContentFooter";
 
 import { mockedCategories } from "@/data/mockedData";
-import ContentFooter from "@/components/ContentFooter";
 
 export interface ITreinoRouteParams {
   params: {
