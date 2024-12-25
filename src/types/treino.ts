@@ -19,3 +19,14 @@ export interface TrainCategory {
   id: number;
   label: string;
 }
+
+export interface MovementDescriptionResponse {
+  descricaoMovimentoId: number;
+  descricao: string;
+}
+
+export interface TrainingMovementResponse {
+  movimentoId: number;
+  titulo: string;
+  descricoes: MovementDescriptionResponse[];
+}

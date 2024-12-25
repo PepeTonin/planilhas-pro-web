@@ -3,19 +3,32 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { PlusSignIcon, SearchList02Icon } from "hugeicons-react";
 import toast, { Toaster } from "react-hot-toast";
+import { Spinner } from "@nextui-org/spinner";
+import {
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  useDisclosure,
+} from "@nextui-org/modal";
 
 import ContentHeader from "@/components/ContentHeader";
 import CardTraining from "@/components/CardTraining";
 import ContentFooter from "@/components/ContentFooter";
 
 import { useAppSelector } from "@/store/store";
-import { createNewTreino } from "@/api/treino";
+import {
+  createNewTreino,
+  getMovementDetails,
+  getTrainingMovements,
+} from "@/api/treino";
 
 import {
   MovementDescription,
   TrainCategory,
   Training,
   TrainingMovement,
+  TrainingMovementResponse,
 } from "@/types/treino";
 
 import { mockedCategories } from "@/data/mockedData";
@@ -44,6 +57,11 @@ export default function NovoTreino() {
 
   const [trainingMovTitle, setTrainingMovTitle] = useState("");
 
+  const [movementsAvailable, setMovementsAvailable] =
+    useState<TrainingMovementResponse[]>();
+
+  const [loadingMovements, setLoadingMovements] = useState(false);
+
   useEffect(() => {
     if (!trainingMovements || trainingMovements.length === 0) {
       setIdSelectedTrainingMovement(-1);
@@ -51,6 +69,8 @@ export default function NovoTreino() {
   }, [trainingMovements]);
 
   const router = useRouter();
+
+  const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
 
   const { user } = useAppSelector((state) => state.auth);
 
@@ -69,8 +89,38 @@ export default function NovoTreino() {
     );
   }
 
-  function handleSearchTrainingMovements() {
-    console.log("search");
+  async function getAllMovements() {
+    setLoadingMovements(true);
+    const trainingMovements = await getTrainingMovements(user.id);
+    setLoadingMovements(false);
+    if (!trainingMovements) return;
+    setMovementsAvailable(trainingMovements);
+  }
+
+  async function handleSearchTrainingMovements() {
+    onOpen();
+    await getAllMovements();
+  }
+
+  async function handleSelectMovementItem(id: number) {
+    setLoadingMovements(true);
+    const movementDetails = await getMovementDetails(user.id, id);
+    setLoadingMovements(false);
+    if (!movementDetails) return;
+
+    const newTrainingMovement: TrainingMovement = {
+      id: newIdTrainingMovement,
+      title: movementDetails.titulo,
+      description: movementDetails.descricoes.map((description) => ({
+        id: description.descricaoMovimentoId,
+        description: description.descricao,
+      })),
+    };
+    setNewIdTrainingMovement((prev) => prev + 1);
+    setTrainingMovements((prev) =>
+      prev ? [...prev, newTrainingMovement] : [newTrainingMovement]
+    );
+    onClose();
   }
 
   function handleCreateNewTrainingMovement() {
@@ -218,7 +268,10 @@ export default function NovoTreino() {
   }
 
   async function handleSaveTraining() {
-    if (!trainingMovements || trainingMovements.length === 0) return;
+    if (!trainingMovements || trainingMovements.length === 0) {
+      toast.error("Erro ao salvar treino");
+      return;
+    }
     setIsSavingTraining(true);
     const training: Training = {
       title: trainingTitle,
@@ -251,10 +304,7 @@ export default function NovoTreino() {
 
   async function handleNewWorkoutPlan() {
     const result = await handleSaveTraining();
-    if (!result) {
-      toast.error("Não foi possível salvar o treino");
-      return;
-    }
+    if (!result) return;
     router.push(`/planilha/nova-planilha`);
   }
 
@@ -360,6 +410,37 @@ export default function NovoTreino() {
         handleSave={handleSaveTraining}
         isBtnLoading={isSavingTraining}
       />
+
+      <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
+        <ModalContent>
+          {() => (
+            <>
+              <ModalHeader className="flex flex-col gap-1">
+                Movimentos de treino disponíveis
+              </ModalHeader>
+              <ModalBody className="pb-6">
+                {loadingMovements ? (
+                  <Spinner color="secondary" />
+                ) : (
+                  <div className="flex flex-col gap-2 max-h-[400px] overflow-y-auto">
+                    {movementsAvailable?.map((movement) => (
+                      <a
+                        key={movement.movimentoId}
+                        onClick={() =>
+                          handleSelectMovementItem(movement.movimentoId)
+                        }
+                        className="hover:opacity-80 transition-transform-opacity cursor-pointer"
+                      >
+                        {movement.titulo}
+                      </a>
+                    ))}
+                  </div>
+                )}
+              </ModalBody>
+            </>
+          )}
+        </ModalContent>
+      </Modal>
     </div>
   );
 }
