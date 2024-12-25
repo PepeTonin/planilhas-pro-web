@@ -10,6 +10,7 @@ interface ContentFooterProps {
   handleStudentLink?: () => void;
   handleExistingWorkoutPlan?: () => void;
   handleNewWorkoutPlan?: () => void;
+  isBtnLoading?: boolean;
 }
 
 export default function ContentFooter({
@@ -19,6 +20,7 @@ export default function ContentFooter({
   handleStudentLink,
   handleExistingWorkoutPlan,
   handleNewWorkoutPlan,
+  isBtnLoading,
 }: ContentFooterProps) {
   const linkingMenuRef = useRef<HTMLDivElement>(null);
 
@@ -50,6 +52,7 @@ export default function ContentFooter({
           linkToStudent={handleStudentLink}
           linkToExistingWorkoutPlan={handleExistingWorkoutPlan}
           linkToNewWorkoutPlan={handleNewWorkoutPlan}
+          isBtnLoading={isBtnLoading}
         />
       )}
       <PrimaryButton
@@ -60,10 +63,12 @@ export default function ContentFooter({
             : handleLink || (() => {})
         }
         variation="white-bg"
+        isLoading={isBtnLoading}
       />
       <PrimaryButton
         label={VariationObject[variation].saveButtonLabel}
         onClick={handleSave}
+        isLoading={isBtnLoading}
       />
     </footer>
   );

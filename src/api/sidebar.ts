@@ -1,5 +1,5 @@
 import { axiosInstance as axios } from ".";
-
+import { DefaultPostResponse } from "@/types/shared";
 import { FetchedGroup } from "@/types/groups";
 
 export async function getAllGroupsByIdProfessor(
@@ -19,7 +19,7 @@ export async function getAllGroupsByIdProfessor(
 export async function createNewGroup(
   idProfessor: number,
   nome: string
-): Promise<number | undefined> {
+): Promise<DefaultPostResponse | undefined> {
   try {
     const response = await axios.post("/novo/grupo", {
       idProfessor,
@@ -34,7 +34,7 @@ export async function createNewGroup(
 export async function createNewSubgroup(
   idGrupo: number,
   nome: string
-): Promise<number | undefined> {
+): Promise<DefaultPostResponse | undefined> {
   try {
     const response = await axios.post("/novo/subgrupo", {
       idGrupo,

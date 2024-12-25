@@ -7,6 +7,7 @@ interface LinkingTrainingMenuProps {
   linkToStudent: () => void;
   linkToExistingWorkoutPlan: () => void;
   linkToNewWorkoutPlan: () => void;
+  isBtnLoading?: boolean;
 }
 
 export default function LinkingTrainingMenu({
@@ -15,6 +16,7 @@ export default function LinkingTrainingMenu({
   linkToStudent,
   linkToExistingWorkoutPlan,
   linkToNewWorkoutPlan,
+  isBtnLoading,
 }: LinkingTrainingMenuProps) {
   const handleClickOutside = (event: MouseEvent) => {
     if (innerRef.current && !innerRef.current.contains(event.target as Node)) {
@@ -39,18 +41,21 @@ export default function LinkingTrainingMenu({
         fullWidth
         label="De aluno"
         onClick={linkToStudent}
+        isLoading={isBtnLoading}
       />
       <PrimaryButton
         variation="light-gray-bg"
         fullWidth
         label="Planilha existente"
         onClick={linkToExistingWorkoutPlan}
+        isLoading={isBtnLoading}
       />
       <PrimaryButton
         variation="light-gray-bg"
         fullWidth
         label="Nova planilha"
         onClick={linkToNewWorkoutPlan}
+        isLoading={isBtnLoading}
       />
     </div>
   );

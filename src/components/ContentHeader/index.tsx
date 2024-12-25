@@ -16,6 +16,10 @@ interface ContentHeaderProps {
   models?: WorkoutPlanModel[];
   selectedModel?: WorkoutPlanModel;
   handleSelectModel?: (model: WorkoutPlanModel) => void;
+  title: string;
+  setTitle: (title: string) => void;
+  description: string;
+  setDescription: (description: string) => void;
 }
 
 export default function ContentHeader({
@@ -27,6 +31,10 @@ export default function ContentHeader({
   models,
   selectedModel,
   handleSelectModel,
+  title,
+  setTitle,
+  description,
+  setDescription,
 }: ContentHeaderProps) {
   const titleRef = useRef<HTMLInputElement>(null);
   const descriptionRef = useRef<HTMLInputElement>(null);
@@ -69,6 +77,8 @@ export default function ContentHeader({
           className="bg-transparent outline-none text-white-f5 min-w-10 max-h-full placeholder:text-gray-medium"
           ref={titleRef}
           placeholder={VariationObject[variation].titlePlaceholder}
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
         />
       </div>
       <div className="flex flex-row gap-2 text-gray-light font-medium text-lg">
@@ -77,6 +87,8 @@ export default function ContentHeader({
           className="flex-1 bg-transparent outline-none text-white-f5 min-w-10 max-h-full placeholder:text-gray-medium caret-gray-medium"
           ref={descriptionRef}
           placeholder={VariationObject[variation].descriptionPlaceholder}
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
         />
       </div>
       <div className="flex flex-row gap-1 text-gray-light font-medium text-lg items-center">
@@ -117,7 +129,7 @@ export default function ContentHeader({
               onClick={toggleModelsMenu}
               className="flex flex-row items-center gap-2 cursor-pointer bg-white-f5 rounded-md px-2 w-[400px]"
             >
-              <p className="flex-1 line-clamp-1" >
+              <p className="flex-1 line-clamp-1">
                 {selectedModel ? selectedModel.title : "Selecione um modelo"}
               </p>
               <ArrowDown01Icon />

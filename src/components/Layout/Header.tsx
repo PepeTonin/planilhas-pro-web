@@ -26,9 +26,9 @@ export default function Header() {
   return (
     <header className="flex flex-row h-20 min-h-20 border-b border-gray-light">
       <div className="w-60 flex justify-center items-center border-r border-gray-light">
-        <div className="cursor-pointer" onClick={handleLogoClick}>
+        <button className="cursor-pointer" onClick={handleLogoClick}>
           <Image src={logo} alt="App logo" width={186} height={35} />
-        </div>
+        </button  >
       </div>
       <div className="flex-1 flex flex-row items-center px-6 justify-between gap-6">
         <SearchBox />

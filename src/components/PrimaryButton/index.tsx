@@ -1,3 +1,5 @@
+import { Spinner } from "@nextui-org/spinner";
+
 interface PrimaryButtonProps {
   label: string;
   onClick: () => void;
@@ -12,6 +14,7 @@ export default function PrimaryButton({
   onClick,
   fullWidth,
   variation = "green-bg",
+  isLoading = false,
 }: PrimaryButtonProps) {
   const variationClasses = {
     "green-bg": "bg-primaryGreen",
@@ -21,6 +24,7 @@ export default function PrimaryButton({
   };
   return (
     <button
+      disabled={isLoading}
       onClick={onClick}
       className={`${
         variationClasses[variation]
@@ -28,7 +32,7 @@ export default function PrimaryButton({
         fullWidth ? "w-full" : "w-52"
       }`}
     >
-      {label}
+      {isLoading ? <Spinner color="secondary" /> : label}
     </button>
   );
 }

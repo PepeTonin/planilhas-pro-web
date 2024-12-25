@@ -68,8 +68,8 @@ export default function Sidebar() {
   };
 
   async function handleCreateNewGroup() {
-    const newId = await createNewGroup(user.id, modalInputValue);
-    if (newId) {
+    const response = await createNewGroup(user.id, modalInputValue);
+    if (response) {
       onClose();
       dispatch(getSidebarGroups(user.id));
       setModalInputValue("");
@@ -77,8 +77,8 @@ export default function Sidebar() {
   }
 
   async function handleCreateNewSubroup() {
-    const newId = await createNewSubgroup(parentGroupId, modalInputValue);
-    if (newId) {
+    const response = await createNewSubgroup(parentGroupId, modalInputValue);
+    if (response) {
       onClose();
       dispatch(getSidebarGroups(user.id));
       setModalInputValue("");
@@ -120,13 +120,7 @@ export default function Sidebar() {
     dispatch(setIsManagementSelected(false));
     dispatch(setAccordionGroupOpened(-1));
     dispatch(setItemSubGroupSelected({ parentId: -1, itemId: -1 }));
-
-    // busca os treinos no bd
-    // verifica qual o id que será usado para esse novo treino
-    // navega para a rota /treino/id
-    const newId = Math.floor(Math.random() * 10);
-
-    router.push(`/treino/${newId}`);
+    router.push(`/treino/novo-treino`);
   }
 
   function handleCreateNewWorkoutPlan() {
