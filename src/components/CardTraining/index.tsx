@@ -40,6 +40,7 @@ interface CardTrainingProps {
     idSelectedTraining: number,
     titleSelectedTraining: string
   ) => void;
+  fetchedTrainingTitle?: string;
 }
 
 export default function CardTraining({
@@ -54,10 +55,12 @@ export default function CardTraining({
   handleUpdateTextSecondaryItem,
   trainingData,
   handleSelectTraining,
+  fetchedTrainingTitle,
 }: CardTrainingProps) {
   const [inputValue, setInputValue] = useState("");
 
-  const [selectedTrainingTitle, setSelectedTrainingTitle] = useState("");
+  const [selectedTrainingTitle, setSelectedTrainingTitle] =
+    useState(fetchedTrainingTitle);
 
   useEffect(() => {
     setInputValue(innerText);
@@ -142,7 +145,7 @@ export default function CardTraining({
         <div className="flex-1 flex flex-col">
           <input
             type="text"
-            placeholder="Título da sessão"
+            placeholder="Título do bloco"
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
             className={`w-full text-white-f5 outline-none ${containerBgColorObject[variation]}`}

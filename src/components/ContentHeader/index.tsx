@@ -1,7 +1,8 @@
 import { useRef, useState } from "react";
 import { PlusSignSquareIcon, ArrowDown01Icon } from "hugeicons-react";
 
-import { TrainCategory, WorkoutPlanModel } from "@/utils/tempTypes";
+import { TrainCategory } from "@/types/treino";
+import { WorkoutPlanModel } from "@/types/workoutPlan";
 
 import CategoriesMenu from "../CategoriesMenu";
 import CategoryTag from "../CategoryTag";
@@ -14,6 +15,7 @@ interface ContentHeaderProps {
   handleSelectCategory: (category: TrainCategory) => void;
   categories: TrainCategory[];
   models?: WorkoutPlanModel[];
+  isLoadingModels?: boolean;
   selectedModel?: WorkoutPlanModel;
   handleSelectModel?: (model: WorkoutPlanModel) => void;
   title: string;
@@ -29,6 +31,7 @@ export default function ContentHeader({
   handleSelectCategory,
   categories,
   models,
+  isLoadingModels,
   selectedModel,
   handleSelectModel,
   title,
@@ -91,7 +94,7 @@ export default function ContentHeader({
           onChange={(e) => setDescription(e.target.value)}
         />
       </div>
-      <div className="flex flex-row gap-1 text-gray-light font-medium text-lg items-center">
+      {/* <div className="flex flex-row gap-1 text-gray-light font-medium text-lg items-center">
         <p>Categorias: </p>
 
         {selectedCategories &&
@@ -120,7 +123,7 @@ export default function ContentHeader({
             onSelectCategory={handleSelectCategory}
           />
         )}
-      </div>
+      // </div> */}
       {variation === "planilha" && (
         <>
           <div className="flex flex-row gap-2 text-gray-light font-medium text-lg">
@@ -137,7 +140,7 @@ export default function ContentHeader({
           </div>
           {isModelsMenuOpen && models && handleSelectModel && (
             <ModelsMenu
-              data={models}
+              models={models}
               innerRef={modelsRef}
               onSelect={handleSelectModel}
               setIsModelsMenuOpen={setIsModelsMenuOpen}

@@ -2,52 +2,70 @@
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { PlusSignIcon } from "hugeicons-react";
+import toast, { Toaster } from "react-hot-toast";
 
 import {
-  TrainCategory,
-  TrainingBlock,
-  WorkoutPlanBlock,
-  WorkoutPlanModel,
-} from "@/utils/tempTypes";
+  createNewWorkoutPlan,
+  getWorkoutPlanById,
+  getWorkoutPlanModels,
+} from "@/api/workoutPlan";
+import { useAppSelector } from "@/store/store";
 
 import ContentHeader from "@/components/ContentHeader";
 import CardTraining from "@/components/CardTraining";
 import ContentFooter from "@/components/ContentFooter";
+import LoadingFeedback from "@/components/LoadingFeedback";
 
+import { TrainCategory } from "@/types/treino";
 import {
-  mockedCategories,
-  mockedModels,
-  mockedTrainings,
-} from "@/data/mockedData";
+  TrainingBlock,
+  WorkoutPlan,
+  WorkoutPlanSession,
+  WorkoutPlanModel,
+  LinkedTraining,
+} from "@/types/workoutPlan";
+
+// mocked apagar
+import { mockedCategories, mockedTrainings } from "@/data/mockedData";
+// mocked apagar
 
 export default function NovaPlanilha() {
+  const [workoutPlanTitle, setWorkoutPlanTitle] = useState("");
+  const [workoutPlanDescription, setWorkoutPlanDescription] = useState("");
+
   const [selectedCategories, setSelectedCategories] =
     useState<TrainCategory[]>();
 
   const [selectedModel, setSelectedModel] = useState<WorkoutPlanModel>();
+  const [allModels, setAllModels] = useState<WorkoutPlanModel[]>();
+  const [loadingModels, setLoadingModels] = useState(false);
+  const [loadingWorkoutPlan, setLoadingWorkoutPlan] = useState(false);
 
-  const [workoutPlanBlocks, setWorkoutPlanBlocks] =
-    useState<WorkoutPlanBlock[]>();
-
-  const [newIdWorkoutPlanBlock, setNewIdWorkoutPlanBlock] = useState<number>(0);
+  const [workoutPlanSessions, setWorkoutPlanSessions] =
+    useState<WorkoutPlanSession[]>();
+  const [newIdWorkoutPlanSession, setNewIdWorkoutPlanSession] =
+    useState<number>(0);
+  const [workoutPlanSessionTitle, setWorkoutPlanSessionTitle] = useState("");
 
   const [selectedTrainingBlocks, setSelectedTrainingBlocks] =
     useState<TrainingBlock[]>();
-
   const [newTrainingBlockId, setNewTrainingBlockId] = useState<number>(0);
-
   const [idSelectedWorkoutPlanBlock, setIdSelectedWorkoutPlanBlock] =
     useState(-1);
 
-  const [workoutPlanBlockTitle, setWorkoutPlanBlockTitle] = useState("");
-
-  useEffect(() => {
-    if (!workoutPlanBlocks || workoutPlanBlocks.length === 0) {
-      setIdSelectedWorkoutPlanBlock(-1);
-    }
-  }, [workoutPlanBlocks]);
+  const [isSavingWorkoutPlan, setIsSavingWorkoutPlan] = useState(false);
 
   const router = useRouter();
+
+  const { user } = useAppSelector((state) => state.auth);
+
+  async function getAllModels() {
+    setLoadingModels(true);
+    const models = await getWorkoutPlanModels(user.id);
+    setLoadingModels(false);
+    if (!models) return;
+    setAllModels(models);
+  }
 
   function handleSelectCategory(category: TrainCategory) {
     if (
@@ -64,57 +82,61 @@ export default function NovaPlanilha() {
     );
   }
 
-  function handleSelectModel(model: WorkoutPlanModel) {
+  async function handleSelectModel(model: WorkoutPlanModel) {
     setSelectedModel(model);
+    setLoadingWorkoutPlan(true);
+    const workoutPlan = await getWorkoutPlanById(model.workoutPlanId);
+    if (!workoutPlan) {
+      setLoadingWorkoutPlan(false);
+      return;
+    }
+    setWorkoutPlanTitle(workoutPlan.title);
+    setWorkoutPlanDescription(workoutPlan.description);
+    setWorkoutPlanSessions(workoutPlan.sessions);
+
+    setLoadingWorkoutPlan(false);
   }
 
   function handleCreateNewWorkoutPlanBlock() {
-    if (!workoutPlanBlocks) {
-      const newWorkoutPlanBlock: WorkoutPlanBlock = {
-        id: newIdWorkoutPlanBlock,
-        title: "Novo bloco",
-        trainingBlocks: [],
-      };
-      setNewIdWorkoutPlanBlock((prev) => prev + 1);
-      return setWorkoutPlanBlocks([newWorkoutPlanBlock]);
-    }
-    const newWorkoutPlanBlock: WorkoutPlanBlock = {
-      id: newIdWorkoutPlanBlock,
-      title: "Novo bloco",
+    const newWorkoutPlanBlock: WorkoutPlanSession = {
+      id: newIdWorkoutPlanSession,
+      title: "Novo sessão",
       trainingBlocks: [],
     };
-    setNewIdWorkoutPlanBlock((prev) => prev + 1);
-    return setWorkoutPlanBlocks((prev) => [...prev!, newWorkoutPlanBlock]);
+    setNewIdWorkoutPlanSession((prev) => prev + 1);
+    return setWorkoutPlanSessions((prev) =>
+      prev ? [...prev!, newWorkoutPlanBlock] : [newWorkoutPlanBlock]
+    );
   }
 
   function handleSelectWorkoutPlanBlock(workoutPlanBlockId: number) {
     setIdSelectedWorkoutPlanBlock(workoutPlanBlockId);
-    const selectedBlock = workoutPlanBlocks?.find(
+    const selectedBlock = workoutPlanSessions?.find(
       (trainingMovement) => trainingMovement.id === workoutPlanBlockId
     );
     const trainingBlocks = selectedBlock?.trainingBlocks;
     if (trainingBlocks) setSelectedTrainingBlocks(trainingBlocks);
     const title = selectedBlock?.title;
-    if (title) setWorkoutPlanBlockTitle(title);
+    if (title) setWorkoutPlanSessionTitle(title);
   }
 
   function handleDeleteItemFromWorkoutPlan(workoutPlanBlockId: number) {
-    if (!workoutPlanBlocks) return;
-    const filteredWorkoutPlanBlocks = workoutPlanBlocks.filter(
+    if (!workoutPlanSessions) return;
+    const filteredWorkoutPlanBlocks = workoutPlanSessions.filter(
       (workoutPlanBlock) => workoutPlanBlock.id !== workoutPlanBlockId
     );
-    setWorkoutPlanBlocks(filteredWorkoutPlanBlocks);
+    setWorkoutPlanSessions(filteredWorkoutPlanBlocks);
   }
 
   function handleCreateNewTrainingBlock(workoutPlanBlockId: number) {
-    if (!workoutPlanBlocks) return;
+    if (!workoutPlanSessions) return;
     const newTrainingBlock = {
       id: newTrainingBlockId,
       title: "",
       linkedTraining: {},
     } as TrainingBlock;
     setNewTrainingBlockId((prev) => prev + 1);
-    const updatedWorkoutPlanBlocks = workoutPlanBlocks.map(
+    const updatedWorkoutPlanBlocks = workoutPlanSessions.map(
       (workoutPlanBlock) => {
         if (workoutPlanBlock.id === workoutPlanBlockId) {
           if (
@@ -137,7 +159,7 @@ export default function NovaPlanilha() {
         return workoutPlanBlock;
       }
     );
-    setWorkoutPlanBlocks(updatedWorkoutPlanBlocks);
+    setWorkoutPlanSessions(updatedWorkoutPlanBlocks);
     setSelectedTrainingBlocks((prev) =>
       prev ? [...prev, newTrainingBlock] : [newTrainingBlock]
     );
@@ -147,8 +169,8 @@ export default function NovaPlanilha() {
     trainingBlockId: number,
     workoutPlanBlockId: number
   ) {
-    if (!workoutPlanBlocks) return;
-    const updatedWorkoutPlanBlocks = workoutPlanBlocks.map(
+    if (!workoutPlanSessions) return;
+    const updatedWorkoutPlanBlocks = workoutPlanSessions.map(
       (workoutPlanBlock) => {
         if (workoutPlanBlock.id === workoutPlanBlockId) {
           const updatedTrainingBlocks = workoutPlanBlock.trainingBlocks.filter(
@@ -162,16 +184,16 @@ export default function NovaPlanilha() {
         return workoutPlanBlock;
       }
     );
-    setWorkoutPlanBlocks(updatedWorkoutPlanBlocks);
+    setWorkoutPlanSessions(updatedWorkoutPlanBlocks);
     setSelectedTrainingBlocks((prev) =>
       prev?.filter((trainingBlock) => trainingBlock.id !== trainingBlockId)
     );
   }
 
   function handleSetWorkoutPlanBlockTitle(id: number, title: string) {
-    if (!workoutPlanBlocks) return;
-    setWorkoutPlanBlockTitle(title);
-    const updatedWorkoutPlanBlocks = workoutPlanBlocks.map(
+    if (!workoutPlanSessions) return;
+    setWorkoutPlanSessionTitle(title);
+    const updatedWorkoutPlanBlocks = workoutPlanSessions.map(
       (workoutPlanBlock) => {
         if (workoutPlanBlock.id === id) {
           return {
@@ -182,7 +204,7 @@ export default function NovaPlanilha() {
         return workoutPlanBlock;
       }
     );
-    setWorkoutPlanBlocks(updatedWorkoutPlanBlocks);
+    setWorkoutPlanSessions(updatedWorkoutPlanBlocks);
   }
 
   function handleSetNewTitleToTrainingBlock(
@@ -190,8 +212,8 @@ export default function NovaPlanilha() {
     idTrainingBlock: number,
     newTitle: string
   ) {
-    if (!workoutPlanBlocks) return;
-    const updatedWorkouPlanBlocks = workoutPlanBlocks.map(
+    if (!workoutPlanSessions) return;
+    const updatedWorkouPlanBlocks = workoutPlanSessions.map(
       (workoutPlanBlock) => {
         if (workoutPlanBlock.id === idWorkoutPlanBlock) {
           const updatedTrainingBlocks = workoutPlanBlock.trainingBlocks.map(
@@ -213,7 +235,7 @@ export default function NovaPlanilha() {
         return workoutPlanBlock;
       }
     );
-    setWorkoutPlanBlocks(updatedWorkouPlanBlocks);
+    setWorkoutPlanSessions(updatedWorkouPlanBlocks);
   }
 
   function handleSelectTrainingInModal(
@@ -221,8 +243,8 @@ export default function NovaPlanilha() {
     idSelectedTraining: number,
     titleSelectedTraining: string
   ) {
-    if (!workoutPlanBlocks) return;
-    const updatedWorkoutPlanBlocks = workoutPlanBlocks.map(
+    if (!workoutPlanSessions) return;
+    const updatedWorkoutPlanBlocks = workoutPlanSessions.map(
       (workoutPlanBlock) => {
         if (workoutPlanBlock.id === idSelectedWorkoutPlanBlock) {
           const updatedTrainingBlocks = workoutPlanBlock.trainingBlocks.map(
@@ -233,7 +255,6 @@ export default function NovaPlanilha() {
                   linkedTraining: {
                     id: idSelectedTraining,
                     title: titleSelectedTraining,
-                    movements: [],
                   },
                 };
               }
@@ -248,35 +269,83 @@ export default function NovaPlanilha() {
         return workoutPlanBlock;
       }
     );
-    setWorkoutPlanBlocks(updatedWorkoutPlanBlocks);
+    setWorkoutPlanSessions(updatedWorkoutPlanBlocks);
   }
 
-  function handleSaveWorkoutPlan() {
-    console.log(workoutPlanBlocks);
+  async function handleSaveWorkoutPlan() {
+    if (!workoutPlanSessions || workoutPlanSessions.length === 0) {
+      toast.error("Erro ao salvar planilha");
+      return;
+    }
+    setIsSavingWorkoutPlan(true);
+    const workoutPlan: WorkoutPlan = {
+      title: workoutPlanTitle,
+      description: workoutPlanDescription,
+      sessions: workoutPlanSessions,
+    };
+    const response = await createNewWorkoutPlan(user.id, workoutPlan);
+    setIsSavingWorkoutPlan(false);
+    if (!response) {
+      toast.error("Erro ao salvar planilha");
+      return undefined;
+    }
+    toast.success("Treino salvo com sucesso");
+    setWorkoutPlanTitle("");
+    setWorkoutPlanDescription("");
+    setWorkoutPlanSessions([]);
+    setNewIdWorkoutPlanSession(0);
+    setWorkoutPlanSessionTitle("");
+    setNewTrainingBlockId(0);
+    setSelectedTrainingBlocks([]);
+    setIdSelectedWorkoutPlanBlock(-1);
+    setSelectedModel(undefined);
+    return response;
   }
 
-  function handleLinkToStudent() {
-    router.push(`/planilha/vincular`);
+  async function handleLinkToStudent() {
+    const response = await handleSaveWorkoutPlan();
+    if (!response) return;
+    router.push(`/planilha/${response.id}/vincular`);
+  }
+
+  useEffect(() => {
+    if (!workoutPlanSessions || workoutPlanSessions.length === 0) {
+      setIdSelectedWorkoutPlanBlock(-1);
+    }
+  }, [workoutPlanSessions]);
+
+  useEffect(() => {
+    getAllModels();
+  }, []);
+
+  if (loadingWorkoutPlan) {
+    return <LoadingFeedback size="lg" label="Carregando..." />;
   }
 
   return (
     <div className="p-6 flex flex-1 flex-col overflow-y-auto h-[calc(100vh-5rem)] scrollbar-custom">
+      <Toaster position="top-right" />
       <ContentHeader
         categories={mockedCategories}
         variation="planilha"
         handleRemoveCategoryFromSelected={handleRemoveCategoryFromSelected}
         handleSelectCategory={handleSelectCategory}
         selectedCategories={selectedCategories || []}
-        models={mockedModels}
+        models={allModels}
+        isLoadingModels={loadingModels}
         selectedModel={selectedModel}
         handleSelectModel={handleSelectModel}
+        title={workoutPlanTitle}
+        setTitle={setWorkoutPlanTitle}
+        description={workoutPlanDescription}
+        setDescription={setWorkoutPlanDescription}
       />
 
-      <main className="flex-1 gap-2 flex flex-row items-start py-2">
+      <main className="flex-1 gap-2 flex flex-row items-start pt-4 pb-2">
         <div className="bg-white-f5 w-1/2 rounded-lg p-2 gap-2 flex flex-col">
-          {workoutPlanBlocks &&
-            workoutPlanBlocks.length > 0 &&
-            workoutPlanBlocks.map((workoutPlanBlock) => (
+          {workoutPlanSessions &&
+            workoutPlanSessions.length > 0 &&
+            workoutPlanSessions.map((workoutPlanBlock) => (
               <CardTraining
                 key={workoutPlanBlock.id}
                 variation="workout-plan-block"
@@ -293,7 +362,7 @@ export default function NovaPlanilha() {
             className="bg-primaryDarkBg rounded-md text-white-f5 flex flex-row px-2 py-1 justify-center cursor-pointer gap-2"
           >
             <PlusSignIcon />
-            <p>Novo bloco</p>
+            <p>Nova sessão</p>
           </div>
         </div>
 
@@ -303,7 +372,7 @@ export default function NovaPlanilha() {
               <input
                 className="bg-transparent outline-none text-white-f5 min-w-10 max-h-full placeholder:text-gray-medium w-full caret-gray-medium"
                 placeholder="Título"
-                value={workoutPlanBlockTitle}
+                value={workoutPlanSessionTitle}
                 onChange={(e) =>
                   handleSetWorkoutPlanBlockTitle(
                     idSelectedWorkoutPlanBlock,
@@ -328,6 +397,7 @@ export default function NovaPlanilha() {
                   }
                   trainingData={mockedTrainings}
                   handleSelectTraining={handleSelectTrainingInModal}
+                  fetchedTrainingTitle={trainingBlock.linkedTraining.title}
                 />
               ))}
 
@@ -348,6 +418,7 @@ export default function NovaPlanilha() {
         variation="planilha"
         handleLink={handleLinkToStudent}
         handleSave={handleSaveWorkoutPlan}
+        isBtnLoading={isSavingWorkoutPlan}
       />
     </div>
   );

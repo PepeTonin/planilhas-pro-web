@@ -127,13 +127,7 @@ export default function Sidebar() {
     dispatch(setIsManagementSelected(false));
     dispatch(setAccordionGroupOpened(-1));
     dispatch(setItemSubGroupSelected({ parentId: -1, itemId: -1 }));
-
-    // busca as planilhas no bd
-    // verifica qual o id que será usado para essa nova planilha
-    // navega para a rota /planilha/id
-    const newId = Math.floor(Math.random() * 10);
-
-    router.push(`/planilha/${newId}`);
+    router.push(`/planilha/nova-planilha`);
   }
 
   useEffect(() => {
