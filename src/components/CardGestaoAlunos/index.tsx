@@ -21,8 +21,6 @@ export default function CardGestaoAlunos({
   paymentStatus,
   onExternalLinkClick,
 }: CardGestaoAlunosProps) {
-  console.log(subGroupName);
-
   return (
     <div className="flex flex-row items-center justify-between bg-white-f5 rounded-lg px-4 py-2">
       <div className="flex flex-row items-center justify-center gap-4">

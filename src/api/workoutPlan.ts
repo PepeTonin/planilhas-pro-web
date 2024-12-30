@@ -1,6 +1,10 @@
 import { axiosInstance as axios } from ".";
 import { DefaultPostResponse } from "@/types/shared";
-import { WorkoutPlan, WorkoutPlanModel } from "@/types/workoutPlan";
+import {
+  LinkWorkoutToStudentBodyReq,
+  WorkoutPlan,
+  WorkoutPlanModel,
+} from "@/types/workoutPlan";
 
 function mapRequestBody(idProfessor: number, workoutPlan: WorkoutPlan) {
   return {
@@ -53,6 +57,21 @@ export async function getWorkoutPlanById(
   } catch (error) {
     console.log(
       "error in src/api/workoutPlan.ts/getWorkoutPlanById(): ",
+      error
+    );
+  }
+}
+
+export async function linkWorkoutToStudent(
+  body: LinkWorkoutToStudentBodyReq,
+  idPlanilha: string
+) {
+  try {
+    const response = await axios.post(`/planilha/${idPlanilha}/vincular`, body);
+    return response.status;
+  } catch (error) {
+    console.log(
+      "error in src/api/workoutPlan.ts/linkWorkoutToStudent(): ",
       error
     );
   }

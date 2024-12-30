@@ -22,11 +22,10 @@ import {
   WorkoutPlan,
   WorkoutPlanSession,
   WorkoutPlanModel,
-  LinkedTraining,
 } from "@/types/workoutPlan";
 
 // mocked apagar
-import { mockedCategories, mockedTrainings } from "@/data/mockedData";
+import { mockedCategories } from "@/data/mockedData";
 // mocked apagar
 
 export default function NovaPlanilha() {
@@ -93,7 +92,6 @@ export default function NovaPlanilha() {
     setWorkoutPlanTitle(workoutPlan.title);
     setWorkoutPlanDescription(workoutPlan.description);
     setWorkoutPlanSessions(workoutPlan.sessions);
-
     setLoadingWorkoutPlan(false);
   }
 
@@ -323,8 +321,9 @@ export default function NovaPlanilha() {
   }
 
   return (
-    <div className="p-6 flex flex-1 flex-col overflow-y-auto h-[calc(100vh-5rem)] scrollbar-custom">
+    <div className="p-6 flex flex-1 flex-col justify-between h-[calc(100vh-5rem)]">
       <Toaster position="top-right" />
+
       <ContentHeader
         categories={mockedCategories}
         variation="planilha"
@@ -341,7 +340,7 @@ export default function NovaPlanilha() {
         setDescription={setWorkoutPlanDescription}
       />
 
-      <main className="flex-1 gap-2 flex flex-row items-start pt-4 pb-2">
+      <main className="flex-1 gap-2 flex flex-row items-start pt-4 pb-2 overflow-y-auto scrollbar-custom my-2">
         <div className="bg-white-f5 w-1/2 rounded-lg p-2 gap-2 flex flex-col">
           {workoutPlanSessions &&
             workoutPlanSessions.length > 0 &&
@@ -395,7 +394,6 @@ export default function NovaPlanilha() {
                   handleUpdateTextSecondaryItem={
                     handleSetNewTitleToTrainingBlock
                   }
-                  trainingData={mockedTrainings}
                   handleSelectTraining={handleSelectTrainingInModal}
                   fetchedTrainingTitle={trainingBlock.linkedTraining.title}
                 />

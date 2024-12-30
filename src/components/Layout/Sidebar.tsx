@@ -176,7 +176,7 @@ export default function Sidebar() {
               ))}
           </div>
         </div>
-        <div className="flex flex-col justify-center items-center pb-8 w-52 gap-4">
+        <div className="flex flex-col justify-center items-center pb-6 w-52 gap-4">
           <PrimaryButton
             label="Criar novo treino"
             onClick={handleCreateNewTraining}

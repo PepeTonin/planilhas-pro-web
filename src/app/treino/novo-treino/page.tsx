@@ -31,7 +31,9 @@ import {
   TrainingMovementResponse,
 } from "@/types/treino";
 
+// mocked apagar
 import { mockedCategories } from "@/data/mockedData";
+// mocked apagar
 
 export default function NovoTreino() {
   const [trainingTitle, setTrainingTitle] = useState("");
@@ -268,7 +270,12 @@ export default function NovoTreino() {
   }
 
   async function handleSaveTraining() {
-    if (!trainingMovements || trainingMovements.length === 0) {
+    if (
+      !trainingMovements ||
+      trainingMovements.length === 0 ||
+      trainingTitle === "" ||
+      trainingDescription === ""
+    ) {
       toast.error("Erro ao salvar treino");
       return;
     }
@@ -295,11 +302,11 @@ export default function NovoTreino() {
   }
 
   function handleStudentLink() {
-    console.log("student");
+    console.log("TODO: student");
   }
 
   function handleExistingWorkoutPlan() {
-    console.log("existing");
+    console.log("TODO: existing");
   }
 
   async function handleNewWorkoutPlan() {
@@ -309,8 +316,9 @@ export default function NovoTreino() {
   }
 
   return (
-    <div className="p-6 flex flex-1 flex-col overflow-y-auto h-[calc(100vh-5rem)] scrollbar-custom">
+    <div className="p-6 flex flex-1 flex-col justify-between h-[calc(100vh-5rem)]">
       <Toaster position="top-right" />
+
       <ContentHeader
         categories={mockedCategories}
         variation="treino"
@@ -323,7 +331,7 @@ export default function NovoTreino() {
         setDescription={setTrainingDescription}
       />
 
-      <main className="flex-1 gap-2 flex flex-row items-start py-2">
+      <main className="flex-1 gap-2 flex flex-row items-start py-2 overflow-y-auto scrollbar-custom mb-2">
         <div className="bg-white-f5 w-1/2 rounded-lg p-2 gap-2 flex flex-col">
           <p className="font-bold">Movimentos do treino</p>
           {trainingMovements &&

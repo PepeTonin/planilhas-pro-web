@@ -11,7 +11,9 @@ import { ReqUserLogin } from "@/types/users";
 import CardHome from "@/components/CardHome";
 import LoadingFeedback from "@/components/LoadingFeedback";
 
+// mocked apagar
 import { mockedMostRecentViewedStudents } from "@/data/mockedData";
+// mocked apagar
 
 export default function Home() {
   const router = useRouter();

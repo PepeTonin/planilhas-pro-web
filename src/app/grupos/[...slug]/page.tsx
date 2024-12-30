@@ -34,15 +34,15 @@ export default function Grupos({ params }: IPlanilhaRouteParams) {
   }
 
   function onInfoClick(id: number) {
-    console.log(id);
+    console.log("TODO: ",id);
   }
 
   function onCurrentTrainingClick(id: number) {
-    console.log(id);
+    console.log("TODO: ",id);
   }
 
   function onPreviousTrainingsClick(id: number) {
-    console.log(id);
+    console.log("TODO: ",id);
   }
 
   async function fillData() {

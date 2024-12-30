@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Delete04Icon, PlusSignSquareIcon } from "hugeicons-react";
+import { Delete04Icon } from "hugeicons-react";
 import {
   Modal,
   ModalBody,
@@ -9,7 +9,12 @@ import {
   useDisclosure,
 } from "@nextui-org/modal";
 
-import { Training } from "@/utils/tempTypes";
+import { getAllTrainings } from "@/api/treino";
+import { useAppSelector } from "@/store/store";
+
+import { TrainingResponse } from "@/types/treino";
+
+import LoadingFeedback from "../LoadingFeedback";
 
 type CardTrainingVariationType =
   | "training-movement"
@@ -34,7 +39,6 @@ interface CardTrainingProps {
     idSecondaryItem: number,
     newText: string
   ) => void;
-  trainingData?: Training[];
   handleSelectTraining?: (
     idTrainingBlock: number,
     idSelectedTraining: number,
@@ -53,34 +57,24 @@ export default function CardTraining({
   handleDeletePrimaryItem,
   handleDeleteSecondaryItem,
   handleUpdateTextSecondaryItem,
-  trainingData,
   handleSelectTraining,
   fetchedTrainingTitle,
 }: CardTrainingProps) {
   const [inputValue, setInputValue] = useState("");
 
+  const [allTrainings, setAllTrainings] = useState<TrainingResponse[]>([]);
+  const [loadingAllTrainings, setLoadingAllTrainings] = useState(false);
+
   const [selectedTrainingTitle, setSelectedTrainingTitle] =
     useState(fetchedTrainingTitle);
-
-  useEffect(() => {
-    setInputValue(innerText);
-  }, []);
-
-  useEffect(() => {
-    if (
-      !handleUpdateTextSecondaryItem ||
-      idSecondaryItem == null ||
-      idPrimaryItem == null
-    )
-      return;
-    handleUpdateTextSecondaryItem(idPrimaryItem, idSecondaryItem, inputValue);
-  }, [inputValue]);
 
   const {
     isOpen: isModalOpen,
     onOpen: openModal,
     onOpenChange,
   } = useDisclosure();
+
+  const { user } = useAppSelector((state) => state.auth);
 
   const containerBgColorObject = {
     "training-movement": "bg-primaryDarkBg ",
@@ -111,10 +105,34 @@ export default function CardTraining({
       handleSelectTraining(idSecondaryItem, idSelectedItem, titleSelectedItem);
   }
 
+  async function populateTrainings() {
+    setLoadingAllTrainings(true);
+    const trainings = await getAllTrainings(user.id);
+    if (trainings) setAllTrainings(trainings);
+    setLoadingAllTrainings(false);
+  }
+
   const isSelectable =
     (variation === "training-movement" || variation === "workout-plan-block") &&
     idPrimaryItem != null &&
     handleSelect;
+
+  useEffect(() => {
+    setInputValue(innerText);
+    if (variation === "workout-plan-training-block") {
+      populateTrainings();
+    }
+  }, []);
+
+  useEffect(() => {
+    if (
+      !handleUpdateTextSecondaryItem ||
+      idSecondaryItem == null ||
+      idPrimaryItem == null
+    )
+      return;
+    handleUpdateTextSecondaryItem(idPrimaryItem, idSecondaryItem, inputValue);
+  }, [inputValue]);
 
   return (
     <div
@@ -170,26 +188,36 @@ export default function CardTraining({
                       Adicionar treino ao bloco
                     </ModalHeader>
                     <ModalBody className="font-semibold ">
-                      {trainingData?.map((training) => (
-                        <div
-                          key={training.id}
-                          className="flex flex-row gap-2 flex-1 cursor-pointer hover:opacity-60"
-                        >
-                          <PlusSignSquareIcon />
-                          <p
-                            className=" line-clamp-1 flex-1"
-                            onClick={() =>
-                              handleSelectItemFromModal(
-                                training.id,
-                                training.title,
-                                onClose
-                              )
-                            }
-                          >
-                            {training.title}
-                          </p>
+                      {loadingAllTrainings && (
+                        <LoadingFeedback
+                          color="secondary"
+                          label="Carregando treinos..."
+                          labelColor="secondary"
+                        />
+                      )}
+                      {allTrainings && !loadingAllTrainings && (
+                        <div className="flex flex-col gap-2 max-h-[400px] overflow-y-auto">
+                          {allTrainings.map((training) => (
+                            <a
+                              key={training.treinoId}
+                              className="flex flex-row gap-2 flex-1 cursor-pointer hover:opacity-60"
+                            >
+                              <p
+                                className=" line-clamp-1 flex-1"
+                                onClick={() =>
+                                  handleSelectItemFromModal(
+                                    training.treinoId,
+                                    training.titulo,
+                                    onClose
+                                  )
+                                }
+                              >
+                                {training.titulo}
+                              </p>
+                            </a>
+                          ))}
                         </div>
-                      ))}
+                      )}
                     </ModalBody>
                     <ModalFooter />
                   </>

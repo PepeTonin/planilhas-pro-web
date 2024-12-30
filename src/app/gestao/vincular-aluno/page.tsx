@@ -14,11 +14,11 @@ export default function VincularAluno() {
   const [fetchedStudent, setFetchedStudent] = useState();
 
   function handleSearchStudent() {
-    console.log("Pesquisar aluno");
+    console.log("TODO: Pesquisar aluno");
   }
 
   function handleLinkStudent() {
-    console.log("Vincular aluno");
+    console.log("TODO: Vincular aluno");
   }
 
   return (

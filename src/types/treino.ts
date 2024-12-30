@@ -30,3 +30,9 @@ export interface TrainingMovementResponse {
   titulo: string;
   descricoes: MovementDescriptionResponse[];
 }
+
+export interface TrainingResponse {
+  treinoId: number;
+  titulo: string;
+  descricao: string;
+}

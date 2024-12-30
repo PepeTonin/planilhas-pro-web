@@ -55,3 +55,12 @@ export async function getMovementDetails(
     console.log("error in src/api/treino.ts/getMovementDetails(): ", error);
   }
 }
+
+export async function getAllTrainings(idProfessor: number) {
+  try {
+    const response = await axios.get(`/treinos/${idProfessor}`);
+    return response.data;
+  } catch (error) {
+    console.log("error in src/api/treino.ts/getAllTrainings(): ", error);
+  }
+}

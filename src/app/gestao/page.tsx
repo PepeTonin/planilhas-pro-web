@@ -30,12 +30,11 @@ export default function Gestao() {
   }
 
   function setFilter(group: string, subGroup: string) {
-    console.log(`filtering by ${group} ${subGroup}`);
+    console.log(`TODO: filtering by ${group} ${subGroup}`);
   }
 
   async function getStudents() {
     const response = await getAllStudents(user.id);
-    console.log(response);
     if (response) {
       setAllStudents(response);
       setLoadingAllStudents(false);

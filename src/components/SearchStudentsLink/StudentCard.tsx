@@ -1,10 +1,10 @@
 import { UserAdd02Icon } from "hugeicons-react";
 
-import { Student } from "@/types/students";
+import { StudentGestao } from "@/types/students";
 
 interface StudentCardProps {
-  student: Student;
-  handleSelect: (student: Student) => void;
+  student: StudentGestao;
+  handleSelect: (student: StudentGestao) => void;
 }
 
 export default function StudentCard({

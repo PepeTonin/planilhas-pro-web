@@ -27,3 +27,10 @@ export interface WorkoutPlan {
   description: string;
   sessions: WorkoutPlanSession[];
 }
+
+export interface LinkWorkoutToStudentBodyReq {
+  idProfessor: number;
+  dataInicio: string;
+  dataFim: string;
+  alunos: number[];
+}
