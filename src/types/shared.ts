@@ -1,4 +1,4 @@
 export interface DefaultPostResponse {
   message: string;
-  id: number;
+  id?: number;
 }

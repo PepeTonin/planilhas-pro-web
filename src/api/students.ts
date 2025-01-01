@@ -1,3 +1,4 @@
+import { DefaultPostResponse } from "@/types/shared";
 import { axiosInstance as axios } from ".";
 
 import { Student, StudentGestao } from "@/types/students";
@@ -32,5 +33,36 @@ export async function getStudentsByGroup(
       "error in src/api/studentsGroups.ts/getStudentsByGroup(): ",
       error
     );
+  }
+}
+
+export async function getStudentByEmail(
+  email: string
+): Promise<Student | undefined> {
+  try {
+    const response = await axios.get(`/aluno/email/${email}`);
+    return response.data;
+  } catch (error) {
+    console.log("error in src/api/students.ts/getStudentByEmail(): ", error);
+  }
+}
+
+export async function linkStudent(
+  idProfessor: number,
+  idAluno: number
+): Promise<DefaultPostResponse | undefined> {
+  console.log({
+    idProfessor,
+    idAluno,
+  });
+  try {
+    const response = await axios.post(`/vincular/professor/aluno`, {
+      idProfessor,
+      idAluno,
+    });
+
+    return response.data;
+  } catch (error) {
+    console.log("error in src/api/students.ts/linkStudent(): ", error);
   }
 }

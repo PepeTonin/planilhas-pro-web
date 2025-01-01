@@ -2,10 +2,11 @@ import { AtIcon } from "hugeicons-react";
 import { useRef } from "react";
 
 interface EmailInputProps {
+  email: string;
   onChange: (value: string) => void;
 }
 
-export default function EmailInput({ onChange }: EmailInputProps) {
+export default function EmailInput({ email, onChange }: EmailInputProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   return (
     <div
@@ -20,6 +21,7 @@ export default function EmailInput({ onChange }: EmailInputProps) {
         placeholder="E-mail do aluno"
         ref={inputRef}
         onChange={(e) => onChange(e.target.value)}
+        value={email}
       />
     </div>
   );
