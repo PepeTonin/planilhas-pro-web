@@ -287,7 +287,7 @@ export default function NovaPlanilha() {
       toast.error("Erro ao salvar planilha");
       return undefined;
     }
-    toast.success("Treino salvo com sucesso");
+    toast.success("Planilha salva com sucesso");
     setWorkoutPlanTitle("");
     setWorkoutPlanDescription("");
     setWorkoutPlanSessions([]);

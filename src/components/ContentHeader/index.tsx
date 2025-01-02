@@ -77,7 +77,7 @@ export default function ContentHeader({
       <div className="flex flex-row gap-2 text-white-f5 font-semibold text-lg">
         <p onClick={() => titleRef.current?.focus()}>Título: </p>
         <input
-          className="bg-transparent outline-none text-white-f5 min-w-10 max-h-full placeholder:text-gray-medium"
+          className="flex-1 bg-transparent outline-none text-white-f5 min-w-10 max-h-full placeholder:text-gray-medium"
           ref={titleRef}
           placeholder={VariationObject[variation].titlePlaceholder}
           value={title}

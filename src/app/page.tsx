@@ -12,6 +12,7 @@ import CardHome from "@/components/CardHome";
 import LoadingFeedback from "@/components/LoadingFeedback";
 
 // mocked apagar
+const showMockedData = false;
 import { mockedMostRecentViewedStudents } from "@/data/mockedData";
 // mocked apagar
 
@@ -22,8 +23,6 @@ export default function Home() {
   const { notifications, loadingNotifications } = useAppSelector(
     (state) => state.home
   );
-
-  const extraInfo = false;
 
   function navigateToAlunoId(id: number) {
     router.push(`/aluno/${id}`);
@@ -75,7 +74,7 @@ export default function Home() {
             ))}
         </div>
       </div>
-      {extraInfo && (
+      {showMockedData && (
         <div>
           <p className="text-gray-light text-2xl font-semibold mb-2">
             Últimos alunos visitados
