@@ -1,7 +1,11 @@
 "use client";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
-import { PlusSignIcon, SearchList02Icon } from "hugeicons-react";
+import { useEffect, useState, useRef } from "react";
+import {
+  PlusSignIcon,
+  SearchList02Icon,
+  PencilEdit02Icon,
+} from "hugeicons-react";
 import toast, { Toaster } from "react-hot-toast";
 import { Spinner } from "@nextui-org/spinner";
 import {
@@ -58,6 +62,7 @@ export default function NovoTreino() {
     useState(-1);
 
   const [trainingMovTitle, setTrainingMovTitle] = useState("");
+  const inputMovTitleRef = useRef<HTMLInputElement>(null);
 
   const [movementsAvailable, setMovementsAvailable] =
     useState<TrainingMovementResponse[]>();
@@ -126,22 +131,17 @@ export default function NovoTreino() {
   }
 
   function handleCreateNewTrainingMovement() {
+    const newTrainingMovement: TrainingMovement = {
+      id: newIdTrainingMovement,
+      title: "Novo exercício",
+      description: [],
+    };
     if (!trainingMovements) {
-      const newTrainingMovement: TrainingMovement = {
-        id: newIdTrainingMovement,
-        title: "Novo movimento",
-        description: [],
-      };
       setNewIdTrainingMovement((prev) => prev + 1);
       return setTrainingMovements([newTrainingMovement]);
     }
-    const newTrainingMovement: TrainingMovement = {
-      id: newIdTrainingMovement,
-      title: "Novo movimento",
-      description: [],
-    };
     setNewIdTrainingMovement((prev) => prev + 1);
-    return setTrainingMovements((prev) => [...prev!, newTrainingMovement]);
+    setTrainingMovements((prev) => [...prev!, newTrainingMovement]);
   }
 
   function handleSelectTrainingMovement(trainingMovId: number) {
@@ -153,6 +153,10 @@ export default function NovoTreino() {
     if (description) setDescriptionSelectedTrainingMov(description);
     const title = selectedMovement?.title;
     if (title) setTrainingMovTitle(title);
+    if (inputMovTitleRef.current) {
+      inputMovTitleRef.current.focus();
+      inputMovTitleRef.current.select();
+    }
   }
 
   function handleDeleteItemFromTrainingMovements(trainingMovId: number) {
@@ -333,7 +337,7 @@ export default function NovoTreino() {
 
       <main className="flex-1 gap-2 flex flex-row items-start py-2 overflow-y-auto scrollbar-custom mb-2">
         <div className="bg-white-f5 w-1/2 rounded-lg p-2 gap-2 flex flex-col">
-          <p className="font-bold">Movimentos do treino</p>
+          <p className="font-bold">Exercícios do treino</p>
           {trainingMovements &&
             trainingMovements.length > 0 &&
             trainingMovements.map((movement) => (
@@ -367,10 +371,15 @@ export default function NovoTreino() {
 
         {idSelectedTrainingMovement !== -1 && (
           <div className="bg-gray-light w-1/2 rounded-lg p-2 gap-2 flex flex-col">
-            <div className="flex flex-row gap-2 text-white-f5 font-semibold text-lg">
+            <div className="flex flex-row items-center gap-2 text-white-f5 font-semibold text-lg">
+              <PencilEdit02Icon
+                onClick={() => inputMovTitleRef.current?.select()}
+                className="cursor-pointer hover:opacity-60 transition-opacity"
+              />
               <input
+                ref={inputMovTitleRef}
                 className="bg-transparent outline-none text-white-f5 min-w-10 max-h-full placeholder:text-gray-medium w-full caret-gray-medium"
-                placeholder="Título"
+                placeholder="Nome do exercício"
                 value={trainingMovTitle}
                 onChange={(e) =>
                   handleSetTrainingMovTitle(
@@ -424,7 +433,7 @@ export default function NovoTreino() {
           {() => (
             <>
               <ModalHeader className="flex flex-col gap-1">
-                Movimentos de treino disponíveis
+                Exercícios de treino disponíveis
               </ModalHeader>
               <ModalBody className="pb-6">
                 {loadingMovements ? (

@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { Delete04Icon } from "hugeicons-react";
+import { useEffect, useRef, useState } from "react";
+import { Delete04Icon, PencilEdit02Icon } from "hugeicons-react";
 import {
   Modal,
   ModalBody,
@@ -65,6 +65,8 @@ export default function CardTraining({
   const [inputValue, setInputValue] = useState("");
   const [selectedTrainingTitle, setSelectedTrainingTitle] =
     useState(fetchedTrainingTitle);
+
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const {
     isOpen: isModalOpen,
@@ -137,23 +139,39 @@ export default function CardTraining({
         </p>
       )}
       {variation === "training-description" && (
-        <input
-          type="text"
-          placeholder="Nova descrição"
-          value={inputValue}
-          onChange={(e) => setInputValue(e.target.value)}
-          className={`flex-1 text-white-f5 outline-none ${containerBgColorObject[variation]}`}
-        />
+        <div className="flex flex-row gap-2 flex-1 items-center">
+          <PencilEdit02Icon
+            width={18}
+            className="text-gray-light cursor-pointer hover:opacity-60 transition-opacity"
+            onClick={() => inputRef.current?.select()}
+          />
+          <input
+            ref={inputRef}
+            type="text"
+            placeholder="Descrição do exercício"
+            value={inputValue}
+            onChange={(e) => setInputValue(e.target.value)}
+            className={`flex-1 text-white-f5 outline-none ${containerBgColorObject[variation]}`}
+          />
+        </div>
       )}
       {variation === "workout-plan-training-block" && (
         <div className="flex-1 flex flex-col">
-          <input
-            type="text"
-            placeholder="Título do bloco"
-            value={inputValue}
-            onChange={(e) => setInputValue(e.target.value)}
-            className={`w-full text-white-f5 outline-none ${containerBgColorObject[variation]}`}
-          />
+          <div className="flex flex-row gap-2">
+            <PencilEdit02Icon
+              width={18}
+              className="text-gray-light cursor-pointer hover:opacity-60 transition-opacity"
+              onClick={() => inputRef.current?.select()}
+            />
+            <input
+              ref={inputRef}
+              type="text"
+              placeholder="Título do bloco (como aparece para o aluno)"
+              value={inputValue}
+              onChange={(e) => setInputValue(e.target.value)}
+              className={`w-full text-white-f5 outline-none ${containerBgColorObject[variation]}`}
+            />
+          </div>
           <div>
             <p
               className="text-primaryGreen font-semibold text-xs cursor-pointer line-clamp-1"
@@ -220,6 +238,7 @@ export default function CardTraining({
           </div>
         </div>
       )}
+
       <Delete04Icon
         className="text-red cursor-pointer"
         onClick={handleDelete}

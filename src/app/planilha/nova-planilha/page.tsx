@@ -1,7 +1,7 @@
 "use client";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
-import { PlusSignIcon } from "hugeicons-react";
+import { useEffect, useRef, useState } from "react";
+import { PlusSignIcon, PencilEdit02Icon } from "hugeicons-react";
 import toast, { Toaster } from "react-hot-toast";
 
 import {
@@ -45,7 +45,9 @@ export default function NovaPlanilha() {
     useState<WorkoutPlanSession[]>();
   const [newIdWorkoutPlanSession, setNewIdWorkoutPlanSession] =
     useState<number>(0);
+
   const [workoutPlanSessionTitle, setWorkoutPlanSessionTitle] = useState("");
+  const inputTitle = useRef<HTMLInputElement>(null);
 
   const [selectedTrainingBlocks, setSelectedTrainingBlocks] =
     useState<TrainingBlock[]>();
@@ -127,6 +129,10 @@ export default function NovaPlanilha() {
     if (trainingBlocks) setSelectedTrainingBlocks(trainingBlocks);
     const title = selectedBlock?.title;
     if (title) setWorkoutPlanSessionTitle(title);
+    if (inputTitle.current) {
+      inputTitle.current.focus();
+      inputTitle.current.select();
+    }
   }
 
   function handleDeleteItemFromWorkoutPlan(workoutPlanBlockId: number) {
@@ -384,10 +390,15 @@ export default function NovaPlanilha() {
 
         {idSelectedWorkoutPlanBlock !== -1 && (
           <div className="bg-gray-light w-1/2 rounded-lg p-2 gap-2 flex flex-col">
-            <div className="flex flex-row gap-2 text-white-f5 font-semibold text-lg">
+            <div className="flex flex-row gap-2 items-center text-white-f5 font-semibold text-lg">
+              <PencilEdit02Icon
+                className="cursor-pointer hover:opacity-60 transition-opacity"
+                onClick={() => inputTitle.current?.select()}
+              />
               <input
+                ref={inputTitle}
                 className="bg-transparent outline-none text-white-f5 min-w-10 max-h-full placeholder:text-gray-medium w-full caret-gray-medium"
-                placeholder="Título"
+                placeholder="Título da sessão"
                 value={workoutPlanSessionTitle}
                 onChange={(e) =>
                   handleSetWorkoutPlanBlockTitle(
