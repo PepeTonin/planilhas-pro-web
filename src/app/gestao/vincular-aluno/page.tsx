@@ -69,7 +69,6 @@ export default function VincularAluno() {
     setLinkingStudent(false);
     setFetchedStudent(undefined);
     setEmail("");
-    console.log(response);
   }
 
   return (

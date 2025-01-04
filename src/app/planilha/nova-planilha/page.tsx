@@ -52,7 +52,7 @@ export default function NovaPlanilha() {
   const [selectedTrainingBlocks, setSelectedTrainingBlocks] =
     useState<TrainingBlock[]>();
   const [newTrainingBlockId, setNewTrainingBlockId] = useState<number>(0);
-  const [idSelectedWorkoutPlanBlock, setIdSelectedWorkoutPlanBlock] =
+  const [idSelectedWorkoutPlanSession, setIdSelectedWorkoutPlanSession] =
     useState(-1);
 
   const [isSavingWorkoutPlan, setIsSavingWorkoutPlan] = useState(false);
@@ -102,8 +102,6 @@ export default function NovaPlanilha() {
       setLoadingWorkoutPlan(false);
       return;
     }
-    setWorkoutPlanTitle(workoutPlan.title);
-    setWorkoutPlanDescription(workoutPlan.description);
     setWorkoutPlanSessions(workoutPlan.sessions);
     setLoadingWorkoutPlan(false);
   }
@@ -120,10 +118,10 @@ export default function NovaPlanilha() {
     );
   }
 
-  function handleSelectWorkoutPlanBlock(workoutPlanBlockId: number) {
-    setIdSelectedWorkoutPlanBlock(workoutPlanBlockId);
+  function handleSelectWorkoutPlanSession(workoutPlanBlockId: number) {
+    setIdSelectedWorkoutPlanSession(workoutPlanBlockId);
     const selectedBlock = workoutPlanSessions?.find(
-      (trainingMovement) => trainingMovement.id === workoutPlanBlockId
+      (session) => session.id === workoutPlanBlockId
     );
     const trainingBlocks = selectedBlock?.trainingBlocks;
     if (trainingBlocks) setSelectedTrainingBlocks(trainingBlocks);
@@ -135,12 +133,12 @@ export default function NovaPlanilha() {
     }
   }
 
-  function handleDeleteItemFromWorkoutPlan(workoutPlanBlockId: number) {
+  function handleDeleteSessionFromWorkoutPlan(workoutPlanBlockId: number) {
     if (!workoutPlanSessions) return;
-    const filteredWorkoutPlanBlocks = workoutPlanSessions.filter(
+    const filteredWorkoutPlanSessions = workoutPlanSessions.filter(
       (workoutPlanBlock) => workoutPlanBlock.id !== workoutPlanBlockId
     );
-    setWorkoutPlanSessions(filteredWorkoutPlanBlocks);
+    setWorkoutPlanSessions(filteredWorkoutPlanSessions);
   }
 
   function handleCreateNewTrainingBlock(workoutPlanBlockId: number) {
@@ -261,7 +259,7 @@ export default function NovaPlanilha() {
     if (!workoutPlanSessions) return;
     const updatedWorkoutPlanBlocks = workoutPlanSessions.map(
       (workoutPlanBlock) => {
-        if (workoutPlanBlock.id === idSelectedWorkoutPlanBlock) {
+        if (workoutPlanBlock.id === idSelectedWorkoutPlanSession) {
           const updatedTrainingBlocks = workoutPlanBlock.trainingBlocks.map(
             (trainingBlock) => {
               if (trainingBlock.id === idTrainingBlock) {
@@ -317,7 +315,7 @@ export default function NovaPlanilha() {
     setWorkoutPlanSessionTitle("");
     setNewTrainingBlockId(0);
     setSelectedTrainingBlocks([]);
-    setIdSelectedWorkoutPlanBlock(-1);
+    setIdSelectedWorkoutPlanSession(-1);
     setSelectedModel(undefined);
     return response;
   }
@@ -330,7 +328,7 @@ export default function NovaPlanilha() {
 
   useEffect(() => {
     if (!workoutPlanSessions || workoutPlanSessions.length === 0) {
-      setIdSelectedWorkoutPlanBlock(-1);
+      setIdSelectedWorkoutPlanSession(-1);
     }
   }, [workoutPlanSessions]);
 
@@ -373,9 +371,9 @@ export default function NovaPlanilha() {
                 variation="workout-plan-block"
                 idPrimaryItem={workoutPlanBlock.id}
                 innerText={workoutPlanBlock.title}
-                selectedItem={idSelectedWorkoutPlanBlock}
-                handleSelect={handleSelectWorkoutPlanBlock}
-                handleDeletePrimaryItem={handleDeleteItemFromWorkoutPlan}
+                selectedItem={idSelectedWorkoutPlanSession}
+                handleSelect={handleSelectWorkoutPlanSession}
+                handleDeletePrimaryItem={handleDeleteSessionFromWorkoutPlan}
               />
             ))}
 
@@ -388,7 +386,7 @@ export default function NovaPlanilha() {
           </div>
         </div>
 
-        {idSelectedWorkoutPlanBlock !== -1 && (
+        {idSelectedWorkoutPlanSession !== -1 && (
           <div className="bg-gray-light w-1/2 rounded-lg p-2 gap-2 flex flex-col">
             <div className="flex flex-row gap-2 items-center text-white-f5 font-semibold text-lg">
               <PencilEdit02Icon
@@ -402,7 +400,7 @@ export default function NovaPlanilha() {
                 value={workoutPlanSessionTitle}
                 onChange={(e) =>
                   handleSetWorkoutPlanBlockTitle(
-                    idSelectedWorkoutPlanBlock,
+                    idSelectedWorkoutPlanSession,
                     e.target.value
                   )
                 }
@@ -411,27 +409,30 @@ export default function NovaPlanilha() {
 
             {selectedTrainingBlocks &&
               selectedTrainingBlocks.length > 0 &&
-              selectedTrainingBlocks.map((trainingBlock) => (
-                <CardTraining
-                  key={trainingBlock.id}
-                  variation="workout-plan-training-block"
-                  idPrimaryItem={idSelectedWorkoutPlanBlock}
-                  idSecondaryItem={trainingBlock.id}
-                  innerText={trainingBlock.title}
-                  handleDeleteSecondaryItem={handleDeleteTrainingBlockItem}
-                  handleUpdateTextSecondaryItem={
-                    handleSetNewTitleToTrainingBlock
-                  }
-                  handleSelectTraining={handleSelectTrainingInModal}
-                  fetchedTrainingTitle={trainingBlock.linkedTraining.title}
-                  allTrainings={allTrainings}
-                  loadingAllTrainings={loadingAllTrainings}
-                />
-              ))}
+              selectedTrainingBlocks.map(
+                (trainingBlock) =>
+                  trainingBlock.id != null && (
+                    <CardTraining
+                      key={trainingBlock.id}
+                      variation="workout-plan-training-block"
+                      idPrimaryItem={idSelectedWorkoutPlanSession}
+                      idSecondaryItem={trainingBlock.id}
+                      innerText={trainingBlock.title}
+                      handleDeleteSecondaryItem={handleDeleteTrainingBlockItem}
+                      handleUpdateTextSecondaryItem={
+                        handleSetNewTitleToTrainingBlock
+                      }
+                      handleSelectTraining={handleSelectTrainingInModal}
+                      fetchedTrainingTitle={trainingBlock.linkedTraining.title}
+                      allTrainings={allTrainings}
+                      loadingAllTrainings={loadingAllTrainings}
+                    />
+                  )
+              )}
 
             <div
               onClick={() =>
-                handleCreateNewTrainingBlock(idSelectedWorkoutPlanBlock)
+                handleCreateNewTrainingBlock(idSelectedWorkoutPlanSession)
               }
               className="bg-gray-dark rounded-md text-white-f5 flex flex-row px-2 py-1 justify-center cursor-pointer gap-2"
             >
