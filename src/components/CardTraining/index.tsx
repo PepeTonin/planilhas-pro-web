@@ -9,12 +9,10 @@ import {
   useDisclosure,
 } from "@nextui-org/modal";
 
-import { getAllTrainings } from "@/api/treino";
-import { useAppSelector } from "@/store/store";
-
 import { TrainingResponse } from "@/types/treino";
 
 import LoadingFeedback from "../LoadingFeedback";
+import { Tooltip } from "@nextui-org/tooltip";
 
 type CardTrainingVariationType =
   | "training-movement"
@@ -45,6 +43,8 @@ interface CardTrainingProps {
     titleSelectedTraining: string
   ) => void;
   fetchedTrainingTitle?: string;
+  allTrainings?: TrainingResponse[];
+  loadingAllTrainings?: boolean;
 }
 
 export default function CardTraining({
@@ -59,12 +59,10 @@ export default function CardTraining({
   handleUpdateTextSecondaryItem,
   handleSelectTraining,
   fetchedTrainingTitle,
+  allTrainings,
+  loadingAllTrainings,
 }: CardTrainingProps) {
   const [inputValue, setInputValue] = useState("");
-
-  const [allTrainings, setAllTrainings] = useState<TrainingResponse[]>([]);
-  const [loadingAllTrainings, setLoadingAllTrainings] = useState(false);
-
   const [selectedTrainingTitle, setSelectedTrainingTitle] =
     useState(fetchedTrainingTitle);
 
@@ -73,8 +71,6 @@ export default function CardTraining({
     onOpen: openModal,
     onOpenChange,
   } = useDisclosure();
-
-  const { user } = useAppSelector((state) => state.auth);
 
   const containerBgColorObject = {
     "training-movement": "bg-primaryDarkBg ",
@@ -105,13 +101,6 @@ export default function CardTraining({
       handleSelectTraining(idSecondaryItem, idSelectedItem, titleSelectedItem);
   }
 
-  async function populateTrainings() {
-    setLoadingAllTrainings(true);
-    const trainings = await getAllTrainings(user.id);
-    if (trainings) setAllTrainings(trainings);
-    setLoadingAllTrainings(false);
-  }
-
   const isSelectable =
     (variation === "training-movement" || variation === "workout-plan-block") &&
     idPrimaryItem != null &&
@@ -119,9 +108,6 @@ export default function CardTraining({
 
   useEffect(() => {
     setInputValue(innerText);
-    if (variation === "workout-plan-training-block") {
-      populateTrainings();
-    }
   }, []);
 
   useEffect(() => {
@@ -198,23 +184,30 @@ export default function CardTraining({
                       {allTrainings && !loadingAllTrainings && (
                         <div className="flex flex-col gap-2 max-h-[400px] overflow-y-auto">
                           {allTrainings.map((training) => (
-                            <a
+                            <Tooltip
                               key={training.treinoId}
-                              className="flex flex-row gap-2 flex-1 cursor-pointer hover:opacity-60"
+                              content={
+                                <div className="flex flex-col text-sm">
+                                  <p className="font-bold">Descrição:</p>
+                                  <p>{training.descricao}</p>
+                                </div>
+                              }
                             >
-                              <p
-                                className=" line-clamp-1 flex-1"
-                                onClick={() =>
-                                  handleSelectItemFromModal(
-                                    training.treinoId,
-                                    training.titulo,
-                                    onClose
-                                  )
-                                }
-                              >
-                                {training.titulo}
-                              </p>
-                            </a>
+                              <a className="flex flex-row gap-2 flex-1 cursor-pointer hover:opacity-60">
+                                <p
+                                  className=" line-clamp-1 flex-1"
+                                  onClick={() =>
+                                    handleSelectItemFromModal(
+                                      training.treinoId,
+                                      training.titulo,
+                                      onClose
+                                    )
+                                  }
+                                >
+                                  {training.titulo}
+                                </p>
+                              </a>
+                            </Tooltip>
                           ))}
                         </div>
                       )}

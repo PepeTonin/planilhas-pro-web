@@ -16,7 +16,7 @@ import CardTraining from "@/components/CardTraining";
 import ContentFooter from "@/components/ContentFooter";
 import LoadingFeedback from "@/components/LoadingFeedback";
 
-import { TrainCategory } from "@/types/treino";
+import { TrainCategory, TrainingResponse } from "@/types/treino";
 import {
   TrainingBlock,
   WorkoutPlan,
@@ -26,6 +26,7 @@ import {
 
 // mocked apagar
 import { mockedCategories } from "@/data/mockedData";
+import { getAllTrainings } from "@/api/treino";
 // mocked apagar
 
 export default function NovaPlanilha() {
@@ -54,9 +55,19 @@ export default function NovaPlanilha() {
 
   const [isSavingWorkoutPlan, setIsSavingWorkoutPlan] = useState(false);
 
+  const [allTrainings, setAllTrainings] = useState<TrainingResponse[]>([]);
+  const [loadingAllTrainings, setLoadingAllTrainings] = useState(false);
+
   const router = useRouter();
 
   const { user } = useAppSelector((state) => state.auth);
+
+  async function populateTrainings() {
+    setLoadingAllTrainings(true);
+    const trainings = await getAllTrainings(user.id);
+    if (trainings) setAllTrainings(trainings);
+    setLoadingAllTrainings(false);
+  }
 
   async function getAllModels() {
     setLoadingModels(true);
@@ -271,7 +282,12 @@ export default function NovaPlanilha() {
   }
 
   async function handleSaveWorkoutPlan() {
-    if (!workoutPlanSessions || workoutPlanSessions.length === 0) {
+    if (
+      !workoutPlanSessions ||
+      workoutPlanSessions.length === 0 ||
+      !workoutPlanTitle ||
+      !workoutPlanDescription
+    ) {
       toast.error("Erro ao salvar planilha");
       return;
     }
@@ -314,6 +330,7 @@ export default function NovaPlanilha() {
 
   useEffect(() => {
     getAllModels();
+    populateTrainings();
   }, []);
 
   if (loadingWorkoutPlan) {
@@ -396,6 +413,8 @@ export default function NovaPlanilha() {
                   }
                   handleSelectTraining={handleSelectTrainingInModal}
                   fetchedTrainingTitle={trainingBlock.linkedTraining.title}
+                  allTrainings={allTrainings}
+                  loadingAllTrainings={loadingAllTrainings}
                 />
               ))}
 
