@@ -104,6 +104,11 @@ export default function NovaPlanilha() {
     }
     setWorkoutPlanSessions(workoutPlan.sessions);
     setLoadingWorkoutPlan(false);
+    const lastId = workoutPlan.sessions.reduce(
+      (max, session) => Math.max(max, session.id),
+      0
+    );
+    setNewIdWorkoutPlanSession(lastId + 1);
   }
 
   function handleCreateNewWorkoutPlanBlock() {
@@ -113,7 +118,7 @@ export default function NovaPlanilha() {
       trainingBlocks: [],
     };
     setNewIdWorkoutPlanSession((prev) => prev + 1);
-    return setWorkoutPlanSessions((prev) =>
+    setWorkoutPlanSessions((prev) =>
       prev ? [...prev!, newWorkoutPlanBlock] : [newWorkoutPlanBlock]
     );
   }

@@ -137,7 +137,6 @@ export default function VincularPlanilha({
   }
 
   async function handleConfirmAction() {
-    setIsSendingData(true);
     if (selectedDates.start.toString() === selectedDates.end.toString()) {
       toast.error("Selecione um período válido");
       return;
@@ -146,6 +145,7 @@ export default function VincularPlanilha({
       toast.error("Selecione pelo menos um aluno");
       return;
     }
+    setIsSendingData(true);
     const requestBody: LinkWorkoutToStudentBodyReq = {
       idProfessor: user.id,
       dataInicio: selectedDates.start.toString(),
@@ -161,9 +161,9 @@ export default function VincularPlanilha({
     setTimeout(() => {
       setSelectedStudents(undefined);
       setFilteredStudents(undefined);
-      router.push("/");
       setIsSendingData(false);
-    }, 1000);
+      router.push("/");
+    }, 500);
   }
 
   useEffect(() => {
@@ -251,7 +251,11 @@ export default function VincularPlanilha({
           variation="red-bg"
           isLoading={isSendingData}
         />
-        <PrimaryButton label="Confirmar" onClick={handleConfirmAction} isLoading={isSendingData} />
+        <PrimaryButton
+          label="Confirmar"
+          onClick={handleConfirmAction}
+          isLoading={isSendingData}
+        />
       </footer>
     </div>
   );

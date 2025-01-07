@@ -103,7 +103,7 @@ export default function Grupos({ params }: IPlanilhaRouteParams) {
             </p>
           </div>
         )}
-        <div className="flex flex-wrap justify-between gap-6">
+        <div className="flex flex-wrap justify-start gap-6">
           {students &&
             !loadingStudents &&
             students.map((item) => (

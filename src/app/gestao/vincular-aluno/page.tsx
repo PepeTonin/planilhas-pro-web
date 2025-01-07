@@ -47,6 +47,7 @@ export default function VincularAluno() {
     if (!student) {
       toast.error("Aluno não encontrado");
       setLoadingStudent(false);
+      setFetchedStudent(undefined);
       return;
     }
     if (student.dataCadastro) {
